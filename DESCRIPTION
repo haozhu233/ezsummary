@@ -1,0 +1,12 @@
+Package: simple.summary
+Type: Package
+Title: Summarise Data in the Simple Way
+Version: 0.1.0
+Authors@R: person("Hao", "Zhu", email = "haozhu@hsl.harvard.com", role = c("aut", "cre"))
+Description: This package includes functions that can simplie the most common descriptive analyses quests. It can be used together with dplyr.
+License: GPL (>=2)
+LazyData: TRUE
+Depends:
+  R (>= 3.1.2)
+Imports:
+  dplyr (>= 0.4)
