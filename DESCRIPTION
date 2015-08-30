@@ -8,8 +8,8 @@ License: GPL (>=2)
 LazyData: TRUE
 Depends:
   R (>= 3.1.2),
+  plyr (>= 1.8.3),
   dplyr (>= 0.4)
-  plyr
 Suggests:
  testthat
 
