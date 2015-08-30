@@ -46,6 +46,8 @@ simple_summary_categorical <- function(tbl, n=F, round.N=3){
     table_export <- rbind_all(table_raw)
     table_export$x <- paste(name_fix, table_export$x, sep="_")
   }
+  attributes(table_export)$n.group <- n.group
+  attributes(table_export)$n.var <- n.var
   return(table_export)
 }
 
@@ -58,7 +60,7 @@ simple_summary_categorical <- function(tbl, n=F, round.N=3){
 count_percentage <- function(data_vector, n=F, round.N=3){
   table_export <- plyr::count(na.omit(data_vector))
   table_export$Percentage <- prop.table(table_export$freq)
-  if (n==T) {table_export <- cbind(table_export, N = round(table_export$freq / table_export$Percentage,0))
+  if (n==T) {table_export <- cbind(table_export, N = as.integer(round(table_export$freq / table_export$Percentage,0)))
   table_export <- table_export[, c(1:(ncol(table_export)-3), ncol(table_export), ncol(table_export)-2, ncol(table_export)-1)]
   }
   table_export$Percentage <- round(table_export$Percentage,round.N)
