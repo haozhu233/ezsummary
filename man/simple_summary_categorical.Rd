@@ -22,13 +22,13 @@ The stats summaries are listed in the last few columns.
 }
 \description{
 This function provided an easy-to-use way to display simple statistical
-summary for categorical data. It can be used together with \code{\link{dplyr::select}}
-and \code{\link{dplyr::group_by}}. If the piece of data passed into the function has
+summary for categorical data. It can be used together with \code{\link[dplyr]{select}}
+and \code{\link[dplyr]{group_by}}. If the piece of data passed into the function has
 one/multiple group_by variables, the percentage and count will be calculated within
 the defined groups.
 }
 \examples{
 mtcars \%>\% group_by(am) \%>\% select(cyl, gear, carb) \%>\% simple_summary_categorical()
-mtcars \%>\% select(cyl, gear, carb) \%>\% simple_summary_categorical(n=T, round.N = 2)
+mtcars \%>\% select(cyl, gear, carb) \%>\% simple_summary_categorical(n=TRUE, round.N = 2)
 }
 

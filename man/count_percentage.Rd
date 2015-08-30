@@ -7,7 +7,19 @@
 \usage{
 count_percentage(data_vector, n = F, round.N = 3)
 
-count_percentage_(a, n = F, round.N = 3)
+count_percentage_(data_matrix, n = F, round.N = 3)
+}
+\arguments{
+\item{data_vector}{Vector that is passed into the function to do the calculation.
+Function count_percentage can only work with vectors.}
+
+\item{n}{n is a True/False switch that controls whether total counts(N) should be included in
+the output.}
+
+\item{round.N}{Rounding number.}
+
+\item{data_matrix}{Matrix or data.frame that is passed into the function.
+Function count_percentage_ can proceed 2 dimensional data.}
 }
 \description{
 This is a calculating module used by \code{\link{simple_summary_categorical}} but

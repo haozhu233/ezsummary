@@ -1,8 +1,8 @@
 #' Simple summary for categorical data
 #'
 #' @description This function provided an easy-to-use way to display simple statistical
-#' summary for categorical data. It can be used together with \code{\link{dplyr::select}}
-#' and \code{\link{dplyr::group_by}}. If the piece of data passed into the function has
+#' summary for categorical data. It can be used together with \code{\link[dplyr]{select}}
+#' and \code{\link[dplyr]{group_by}}. If the piece of data passed into the function has
 #' one/multiple group_by variables, the percentage and count will be calculated within
 #' the defined groups.
 #'
@@ -18,7 +18,7 @@
 #'
 #' @examples
 #' mtcars %>% group_by(am) %>% select(cyl, gear, carb) %>% simple_summary_categorical()
-#' mtcars %>% select(cyl, gear, carb) %>% simple_summary_categorical(n=T, round.N = 2)
+#' mtcars %>% select(cyl, gear, carb) %>% simple_summary_categorical(n=TRUE, round.N = 2)
 #'
 #' @export
 simple_summary_categorical <- function(tbl, n=F, round.N=3){
@@ -56,6 +56,15 @@ simple_summary_categorical <- function(tbl, n=F, round.N=3){
 #' @description This is a calculating module used by \code{\link{simple_summary_categorical}} but
 #' it can also be used independently.
 #'
+#' @param data_vector Vector that is passed into the function to do the calculation.
+#' Function count_percentage can only work with vectors.
+#' @param data_matrix Matrix or data.frame that is passed into the function.
+#' Function count_percentage_ can proceed 2 dimensional data.
+#' @param n n is a True/False switch that controls whether total counts(N) should be included in
+#' the output.
+#' @param round.N Rounding number.
+#'
+#'
 #' @export
 count_percentage <- function(data_vector, n=F, round.N=3){
   table_export <- plyr::count(na.omit(data_vector))
@@ -69,7 +78,7 @@ count_percentage <- function(data_vector, n=F, round.N=3){
 
 #' @rdname count_percentage
 #' @export
-count_percentage_ <- function(a, n=F, round.N=3){do(a, count_percentage(., n=n, round.N=round.N))}
+count_percentage_ <- function(data_matrix, n=F, round.N=3){do(data_matrix, count_percentage(., n=n, round.N=round.N))}
 
 
 
