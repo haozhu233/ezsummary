@@ -1,7 +1,7 @@
 Package: simple.summary
 Type: Package
 Title: Summarise Data in the Simple Way
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: person("Hao", "Zhu", email = "haozhu@hsl.harvard.com", role = c("aut", "cre"))
 Description: Functions that can simplie the most common descriptive analyses quests.
 License: GPL (>=2)
