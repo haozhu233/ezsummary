@@ -17,7 +17,7 @@
 var_type <- function(tbl, types){
   if(!is.data.frame(tbl))stop("Please supply a data.frame/data.table as the value of tbl")
   if(nchar(types) != length(attributes(tbl)$names) - length(attributes(tbl)$vars))stop("The length of the string you entered doesn't match the number of variables (excluding grouping variables)")
-  if(grepl("[^cq]", types)) stop('Unrecognizable character(s) detected!! Please review your input and use "q" and "c" to denote quantitative and categorical variables. ')
+  if(grepl("[^cq]", types)) stop('Unrecognizable character(s) detected!! Please review your input and use "q" and "c" to denote quantitative and categorical variables')
   attributes(tbl)$var_types <- unlist(strsplit(types, ""))
   return(tbl)
 }
