@@ -1,6 +1,5 @@
 # simple.summary 
-Travis: [![Build Status](https://travis-ci.org/haozhu233/simple.summary.svg?branch=master)](https://travis-ci.org/haozhu233/simple.summary)  
-Coveralls: [![Coverage Status](https://coveralls.io/repos/haozhu233/simple.summary/badge.svg?branch=master&service=github)](https://coveralls.io/github/haozhu233/simple.summary?branch=master)
+Travis CI: [![Build Status](https://travis-ci.org/haozhu233/simple.summary.svg?branch=master)](https://travis-ci.org/haozhu233/simple.summary)  Test Coverage: [![Coverage Status](https://coveralls.io/repos/haozhu233/simple.summary/badge.svg?branch=master&service=github)](https://coveralls.io/github/haozhu233/simple.summary?branch=master)
 
 Both `dplyr` and `data.table` have made the our data analytical job a lot easier. However, I still find that sometimes I need to type the same codes again and again to do some very simple jobs in my everyday life. For example, I found that I need to code a lot to fix the formatting to put those result into a table and get displayed through `rmarkdown` or `shiny`. This package is built to save us, at least people who are working with small-medium size data, a little bit more typing time.
 
