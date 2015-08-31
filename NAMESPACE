@@ -2,6 +2,5 @@
 
 export(count_percentage)
 export(count_percentage_)
-export(simple_summary_binary)
 export(simple_summary_categorical)
 export(simple_summary_quantitative)
