@@ -1,4 +1,4 @@
 library("testthat")
-library("simple.summary")
+library("ezsummary")
 
-test_check("simple.summary")
+test_check("ezsummary")

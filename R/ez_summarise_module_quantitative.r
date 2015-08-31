@@ -1,7 +1,7 @@
 #' Simple Summary for Quantitative/binary variables
 #'
-#' @description Function simple_summary_quantitative provides simple summary (Mean and
-#' standard deviation with/without N) for quantitative data while function simple_summary_binary
+#' @description Function ez_summarise_quantitative provides simple summary (Mean and
+#' standard deviation with/without N) for quantitative data while function ez_summarise_binary
 #' provides simple summary (freq and percentage with/without total counts) for binary data.
 #' These two function are simply wrappers outside of a summarise_each function. If
 #' we just want to know the most basic statistical summary, this function can save us some
@@ -15,10 +15,10 @@
 #' @return It will return in the same format as a summarise_each function does
 #'
 #' @examples
-#' mtcars %>% group_by(am) %>% select(mpg, wt, qsec) %>% simple_summary_quantitative()
+#' mtcars %>% group_by(am) %>% select(mpg, wt, qsec) %>% ez_summarise_quantitative()
 #'
 #' @export
-simple_summary_quantitative <- function(tbl, n=F, round.N=3){
+ez_summarise_quantitative <- function(tbl, n=F, round.N=3){
   n.group <- length(attributes(tbl)$vars)
   n.var <- length(attributes(tbl)$names) - length(attributes(tbl)$vars)
   table_export <- data.frame(x = rep(names(tbl)[(n.group + 1):(n.group + n.var)], rep((n.group + 1), n.var)))

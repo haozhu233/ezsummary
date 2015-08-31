@@ -1,4 +1,4 @@
-#' Simple summary for categorical data
+#' Easy summary for categorical data
 #'
 #' @description This function provided an easy-to-use way to display simple statistical
 #' summary for categorical data. It can be used together with \code{\link[dplyr]{select}}
@@ -17,11 +17,11 @@
 #' The stats summaries are listed in the last few columns.
 #'
 #' @examples
-#' mtcars %>% group_by(am) %>% select(cyl, gear, carb) %>% simple_summary_categorical()
-#' mtcars %>% select(cyl, gear, carb) %>% simple_summary_categorical(n=TRUE, round.N = 2)
+#' mtcars %>% group_by(am) %>% select(cyl, gear, carb) %>% ez_summarise_categorical()
+#' mtcars %>% select(cyl, gear, carb) %>% ez_summarise_categorical(n=TRUE, round.N = 2)
 #'
 #' @export
-simple_summary_categorical <- function(tbl, n=F, round.N=3){
+ez_summarise_categorical <- function(tbl, n=F, round.N=3){
   n.group <- length(attributes(tbl)$vars)
   n.var <- length(attributes(tbl)$names) - length(attributes(tbl)$vars)
   table_raw <- NULL
@@ -53,7 +53,7 @@ simple_summary_categorical <- function(tbl, n=F, round.N=3){
 
 #' Counts and Percentages
 #'
-#' @description This is a calculating module used by \code{\link{simple_summary_categorical}} but
+#' @description This is a calculating module used by \code{\link{ez_summarise_categorical}} but
 #' it can also be used independently.
 #'
 #' @param data_vector Vector that is passed into the function to do the calculation.
