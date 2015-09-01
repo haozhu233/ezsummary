@@ -29,9 +29,9 @@ as I know, so far there isn't a straight forward function to deal with this
 need. This function is built to address this issue.
 }
 \examples{
-dt <- mtcars \%>\% group_by(cyl) \%>\% select(gear, carb) \%>\% ez_summarise_categorical(n=T)
+dt <- mtcars \%>\% group_by(cyl) \%>\% select(gear, carb) \%>\% ez_summarise_categorical(n=TRUE)
 
-ez_markup(aaa, "...[.(.)]")
-ez_markup(aaa, "..[. (. ~ .)]")
+ez_markup(dt, "...[.(.)]")
+ez_markup(dt, "..[. (. ~ .)]")
 }
 

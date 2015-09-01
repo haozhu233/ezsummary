@@ -20,10 +20,10 @@
 #' you would like to add.
 #'
 #' @examples
-#' dt <- mtcars %>% group_by(cyl) %>% select(gear, carb) %>% ez_summarise_categorical(n=T)
+#' dt <- mtcars %>% group_by(cyl) %>% select(gear, carb) %>% ez_summarise_categorical(n=TRUE)
 #'
-#' ez_markup(aaa, "...[.(.)]")
-#' ez_markup(aaa, "..[. (. ~ .)]")
+#' ez_markup(dt, "...[.(.)]")
+#' ez_markup(dt, "..[. (. ~ .)]")
 #'
 #' @export
 ez_markup <- function(tbl, pattern){
