@@ -44,16 +44,16 @@ ez_markup_ <- function(tbl, general_pattern, table_export){
     tbl <- tbl[-1]
     ez_markup_(tbl = tbl, general_pattern = general_pattern, table_export = table_export)
   }else{
-  if(general_pattern[1] == "["){
-    column_export <- ez_markup_bracket(tbl = tbl, bracket_pattern = general_pattern[-1])
-    table_export <- cbind(table_export, column_export)
-    names(table_export)[ncol(table_export)] <- attributes(column_export)$column_name_export
-    number_of_dots <- attributes(column_export)$number_of_dots
-    number_of_characters <- attributes(column_export)$number_of_characters
-    general_pattern <- general_pattern[(-1):(-number_of_characters)]
-    tbl<-tbl[,c((-1):(-number_of_dots))]
-    ez_markup_(tbl = tbl, general_pattern = general_pattern, table_export = table_export)
-  }
+    if(general_pattern[1] == "["){
+      column_export <- ez_markup_bracket(tbl = tbl, bracket_pattern = general_pattern[-1])
+      table_export <- cbind(table_export, column_export)
+      names(table_export)[ncol(table_export)] <- attributes(column_export)$column_name_export
+      number_of_dots <- attributes(column_export)$number_of_dots
+      number_of_characters <- attributes(column_export)$number_of_characters
+      general_pattern <- general_pattern[(-1):(-number_of_characters)]
+      tbl<-tbl[,c((-1):(-number_of_dots))]
+      ez_markup_(tbl = tbl, general_pattern = general_pattern, table_export = table_export)
+    }
   }
 }
 
@@ -65,7 +65,7 @@ ez_markup_bracket <- function(tbl, bracket_pattern, column_export="", column_nam
     attributes(column_export)$number_of_characters <- number_of_characters
     attributes(column_export)$column_name_export <- column_name_export
     return(column_export)
-    }
+  }
   if(bracket_pattern[1] == ".") {
     column_export <- paste0(column_export, tbl[[1]])
     column_name_export <- paste0(column_name_export, names(tbl)[1])
@@ -77,11 +77,11 @@ ez_markup_bracket <- function(tbl, bracket_pattern, column_export="", column_nam
   }
   if(bracket_pattern[1] == "^") {
     if (bracket_pattern[2] == "." & bracket_pattern[3] == "^"){
-    column_export <- paste0(column_export, ".")
-    column_name_export <- paste0(column_name_export, ".")
-    bracket_pattern <- bracket_pattern[c(-1, -2, -3)]
-    number_of_characters <- number_of_characters + 1
-    ez_markup_bracket(tbl = tbl, bracket_pattern = bracket_pattern, column_export = column_export, column_name_export=column_name_export, number_of_dots = number_of_dots, number_of_characters = number_of_characters)
+      column_export <- paste0(column_export, ".")
+      column_name_export <- paste0(column_name_export, ".")
+      bracket_pattern <- bracket_pattern[c(-1, -2, -3)]
+      number_of_characters <- number_of_characters + 1
+      ez_markup_bracket(tbl = tbl, bracket_pattern = bracket_pattern, column_export = column_export, column_name_export=column_name_export, number_of_dots = number_of_dots, number_of_characters = number_of_characters)
     } else {
       column_export <- paste0(column_export, "^")
       column_name_export <- paste0(column_name_export, "^")

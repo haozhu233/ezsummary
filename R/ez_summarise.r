@@ -18,9 +18,9 @@ ez_summarise <- function(tbl, n=F, round.N=3){
   tbl.q.result <- NULL
   tbl.c.result <- NULL
   if (length(tbl.q) > length(attributes(tbl)$vars)){
-  tbl.q.result <- ez_summarise_quantitative(tbl = tbl.q, n=n, round.N = round.N)}
+    tbl.q.result <- ez_summarise_quantitative(tbl = tbl.q, n=n, round.N = round.N)}
   if (length(tbl.c) > length(attributes(tbl)$vars)){
-  tbl.c.result <- ez_summarise_categorical(tbl = tbl.c, n=n, round.N = round.N)}
+    tbl.c.result <- ez_summarise_categorical(tbl = tbl.c, n=n, round.N = round.N)}
   if (!is.null(tbl.q.result) & !is.null(tbl.c.result)){
     tbl.q.result <- rename(tbl.q.result, mean_freq = mean)
     tbl.c.result <- rename(tbl.c.result, mean_freq = freq)

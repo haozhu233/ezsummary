@@ -32,13 +32,13 @@ ez_summarise_quantitative <- function(tbl, n=F, round.N=3){
     tbl_order <- 1:(n.group + n.var)
     tbl_order <- c(which(names(tbl) %in% attributes(tbl)$vars), tbl_order[!tbl_order %in% which(names(tbl) %in% attributes(tbl)$vars)])
     tbl <- tbl[,tbl_order]
-  table_export <- data.frame(x = rep(names(tbl)[(n.group + 1):(n.group + n.var)], rep((length(attributes(tbl)$group_sizes)), n.var)))}
+    table_export <- data.frame(x = rep(names(tbl)[(n.group + 1):(n.group + n.var)], rep((length(attributes(tbl)$group_sizes)), n.var)))}
   # generate table_raw from summarise_each based on switches; Apply round.N
   if (n == F) {table_raw <- summarise_each(tbl, funs(mean = round(mean(na.omit(.)), round.N), sd = round(sd(na.omit(.)), round.N)))
   }else{
     table_raw <- summarise_each(tbl, funs(N = length(na.omit(.)), mean = round(mean(na.omit(.)), round.N), sd = round(sd(na.omit(.)), round.N)))
     for(i in 1:(n.var * (nrow(table_raw)))){table_export$N[i] = table_raw[(i - nrow(table_raw) * (ceiling(i/nrow(table_raw))-1)),(n.group + ceiling(i/nrow(table_raw)))]}
-    }
+  }
   # Fix the default naming when n.var == 1
   # if (n.var == 1) {names(table_raw)[(n.group + 1):ncol(table_raw)] <- paste(names(tbl)[(n.group + 1)], names(table_raw)[(n.group + 1):ncol(table_raw)], sep = "_")}
   for(i in 1:(n.var * (nrow(table_raw)))){table_export$mean[i] = table_raw[(i - nrow(table_raw) * (ceiling(i/nrow(table_raw))-1)), (n.group + ceiling(i/nrow(table_raw)) + n.var * n)]}
