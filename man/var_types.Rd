@@ -9,9 +9,8 @@ var_types(tbl, types)
 \arguments{
 \item{tbl}{A data.frame}
 
-\item{types}{Character vector of length equal to the number of variables (excluding
-grouping variables)in the dataset. Use "q" and "c" to denote quantitative and
-categorical variables.}
+\item{types}{Character vector of length equal to the number of variables in the
+dataset. Use "q" and "c" to denote quantitative and categorical variables.}
 }
 \description{
 In order to analyze variables in the most appropriate way using this

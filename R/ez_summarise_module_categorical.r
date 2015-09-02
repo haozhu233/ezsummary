@@ -39,6 +39,9 @@ ez_summarise_categorical <- function(tbl, n=F, round.N=3){
     table_export <- rbind_all(table_raw)
     table_export$x <- paste(name_fix, table_export$x, sep="_")
   } else {
+    tbl_order <- 1:(n.group + n.var)
+    tbl_order <- c(which(suppressWarnings(attributes(tbl)$vars == names(tbl))), tbl_order[!tbl_order %in% which(suppressWarnings(attributes(tbl)$vars == names(tbl)))])
+    tbl <- tbl[,tbl_order]
     if(n == T){for (i in 1:n.var){table_raw[[i]]<-count_percentage_(tbl[,c(1:n.group, i + n.group)], n=T, round.N=round.N)}
     }else{for (i in 1:n.var){table_raw[[i]]<-count_percentage_(tbl[,c(1:n.group, i + n.group)], round.N=round.N)}
     }
@@ -73,11 +76,11 @@ ez_summarise_categorical <- function(tbl, n=F, round.N=3){
 #' @export
 count_percentage <- function(data_vector, n=F, round.N=3){
   table_export <- plyr::count(na.omit(data_vector))
-  table_export$Percentage <- prop.table(table_export$freq)
-  if (n==T) {table_export <- cbind(table_export, N = as.integer(round(table_export$freq / table_export$Percentage,0)))
+  table_export$percentage <- prop.table(table_export$freq)
+  if (n==T) {table_export <- cbind(table_export, N = as.integer(round(table_export$freq / table_export$percentage,0)))
   table_export <- table_export[, c(1:(ncol(table_export)-3), ncol(table_export), ncol(table_export)-2, ncol(table_export)-1)]
   }
-  table_export$Percentage <- round(table_export$Percentage,round.N)
+  table_export$percentage <- round(table_export$percentage,round.N)
   return(table_export)
 }
 

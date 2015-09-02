@@ -12,8 +12,8 @@ test_that("var_types will only react to data.frame(including data.table)", {
 })
 
 test_that("var_types will throw error when the length of 'types' doesn't match up", {
-  expect_error(var_types(mtcars, "qqqqqqc"), "The length of the string you entered doesn't match the number of variables \\(excluding grouping variables\\)")
-  expect_error(var_types(group_by(mtcars, am), "qcqqqqqcccc"), "The length of the string you entered doesn't match the number of variables \\(excluding grouping variables\\)")
+  expect_error(var_types(mtcars, "qqqqqqc"), "The length of the string you entered doesn't match the number of variables")
+  expect_error(var_types(group_by(mtcars, am), "qcqqqqqccc"), "The length of the string you entered doesn't match the number of variables")
 })
 
 test_that("var_types will throw error when the 'types' string contains characters other than 'q' and 'c'", {

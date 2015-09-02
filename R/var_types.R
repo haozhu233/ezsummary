@@ -8,15 +8,14 @@
 #' in the attributes of the dataset
 #'
 #' @param tbl A data.frame
-#' @param types Character vector of length equal to the number of variables (excluding
-#' grouping variables)in the dataset. Use "q" and "c" to denote quantitative and
-#' categorical variables.
+#' @param types Character vector of length equal to the number of variables in the
+#' dataset. Use "q" and "c" to denote quantitative and categorical variables.
 #'
 #' @export
 
 var_types <- function(tbl, types){
   if(!is.data.frame(tbl))stop("Please supply a data.frame/data.table as the value of tbl")
-  if(nchar(types) != length(attributes(tbl)$names) - length(attributes(tbl)$vars))stop("The length of the string you entered doesn't match the number of variables (excluding grouping variables)")
+  if(nchar(types) != length(attributes(tbl)$names))stop("The length of the string you entered doesn't match the number of variables")
   if(grepl("[^cq]", types)) stop('Unrecognizable character(s) detected!! Please review your input and use "q" and "c" to denote quantitative and categorical variables')
   attributes(tbl)$var_types <- unlist(strsplit(types, ""))
   return(tbl)
@@ -30,6 +29,8 @@ var_types <- function(tbl, types){
 #' a warning message will be printed on the screen.
 #'
 #' @param tbl The imported data.frame
+#'
+#' @export
 auto_var_types <- function(tbl){
   if(is.null(attributes(tbl)$var_types)){attributes(tbl)$var_types <- rep("q", ncol(tbl))}
   col_class <- sapply(tbl, class)
@@ -40,6 +41,9 @@ auto_var_types <- function(tbl){
       warning(paste("Variable", paste(names(which(attributes(tbl)$var_types == "q" & col_class == "character")), sep="", collapse = ", " ), "are character variables. They are analyzed as categorical variables by default. "))
     }
     attributes(tbl)$var_types[attributes(tbl)$var_types == "q" & attributes(tbl)$col_class == "character"]<-"c"
+  }
+  if (length(attributes(tbl)$vars) != 0){
+      attributes(tbl)$var_types[suppressWarnings(attributes(tbl)$vars == names(tbl))]<-"g"
   }
   return(tbl)
 }
