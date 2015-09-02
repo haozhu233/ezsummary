@@ -2,9 +2,7 @@
 
 export(count_percentage)
 export(count_percentage_)
-export(enchant)
 export(ez_markup)
 export(ez_summarise_categorical)
 export(ez_summarise_quantitative)
-export(var_type)
-export(var_types_are)
+export(var_types)
