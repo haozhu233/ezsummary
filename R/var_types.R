@@ -43,7 +43,7 @@ auto_var_types <- function(tbl){
     attributes(tbl)$var_types[attributes(tbl)$var_types == "q" & attributes(tbl)$col_class == "character"]<-"c"
   }
   if (length(attributes(tbl)$vars) != 0){
-      attributes(tbl)$var_types[suppressWarnings(attributes(tbl)$vars == names(tbl))]<-"g"
+      attributes(tbl)$var_types[names(tbl) %in% attributes(tbl)$vars]<-"g"
   }
   return(tbl)
 }
