@@ -1,3 +1,10 @@
+#' Quick and Easy summarise function
+#'
+#' @param tbl The input matrix of data you would like to analyze.
+#' @param n n is a True/False switch that controls whether counts(N) should be included in
+#' the output
+#' @param round.N Rounding Number
+#'
 #' @export
 ez_summarise <- function(tbl, n=F, round.N=3){
   if(is.vector(tbl)){

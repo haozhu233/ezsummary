@@ -26,7 +26,13 @@ ez_summarise_quantitative <- function(tbl, n=F, round.N=3){
   }
   n.group <- length(attributes(tbl)$vars)
   n.var <- length(attributes(tbl)$names) - length(attributes(tbl)$vars)
-  table_export <- data.frame(x = rep(names(tbl)[(n.group + 1):(n.group + n.var)], rep((n.group + 1), n.var)))
+  if(n.group == 0){
+    table_export <- data.frame(x = rep(names(tbl)[(n.group + 1):(n.group + n.var)], rep(1, n.var)))
+  }else{
+    tbl_order <- 1:(n.group + n.var)
+    tbl_order <- c(which(names(tbl) %in% attributes(tbl)$vars), tbl_order[!tbl_order %in% which(names(tbl) %in% attributes(tbl)$vars)])
+    tbl <- tbl[,tbl_order]
+  table_export <- data.frame(x = rep(names(tbl)[(n.group + 1):(n.group + n.var)], rep((length(attributes(tbl)$group_sizes)), n.var)))}
   # generate table_raw from summarise_each based on switches; Apply round.N
   if (n == F) {table_raw <- summarise_each(tbl, funs(mean = round(mean(na.omit(.)), round.N), sd = round(sd(na.omit(.)), round.N)))
   }else{

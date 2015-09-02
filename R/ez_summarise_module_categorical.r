@@ -40,7 +40,7 @@ ez_summarise_categorical <- function(tbl, n=F, round.N=3){
     table_export$x <- paste(name_fix, table_export$x, sep="_")
   } else {
     tbl_order <- 1:(n.group + n.var)
-    tbl_order <- c(which(suppressWarnings(attributes(tbl)$vars == names(tbl))), tbl_order[!tbl_order %in% which(suppressWarnings(attributes(tbl)$vars == names(tbl)))])
+    tbl_order <- c(which(names(tbl) %in% attributes(tbl)$vars), tbl_order[!tbl_order %in% which(names(tbl) %in% attributes(tbl)$vars)])
     tbl <- tbl[,tbl_order]
     if(n == T){for (i in 1:n.var){table_raw[[i]]<-count_percentage_(tbl[,c(1:n.group, i + n.group)], n=T, round.N=round.N)}
     }else{for (i in 1:n.var){table_raw[[i]]<-count_percentage_(tbl[,c(1:n.group, i + n.group)], round.N=round.N)}
