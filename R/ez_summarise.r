@@ -27,7 +27,7 @@ ez_summarise <- function(tbl, n=F, round.N=3){
     tbl.q.result <- rename(tbl.q.result, sd_p = sd)
     tbl.c.result <- rename(tbl.c.result, sd_p = percentage)
   }
-  tbl.result <- rbind.fill(tbl.q.result, tbl.c.result)
+  tbl.result <- rbind(tbl.q.result, tbl.c.result)
   return(tbl.result)
 }
 
