@@ -1,7 +1,7 @@
 Package: ezsummary
 Type: Package
 Title: Summarise Data in the Quick and Easy Way
-Version: 0.1.3
+Version: 0.1.4
 Authors@R: person("Hao", "Zhu", email = "haozhu@hsl.harvard.com", role = c("aut", "cre"))
 Description: Functions that can simplie the most common descriptive analyses quests.
 License: GPL (>=2)
@@ -9,7 +9,9 @@ LazyData: TRUE
 Depends:
   R (>= 3.1.2),
   plyr,
-  dplyr (>= 0.4)
+  dplyr (>= 0.4),
+  tidyr,
+  reshape2
 Suggests:
  testthat
 

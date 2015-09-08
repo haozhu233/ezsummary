@@ -4,7 +4,8 @@
 \alias{ez_summarise_quantitative}
 \title{Simple Summary for Quantitative/binary variables}
 \usage{
-ez_summarise_quantitative(tbl, n = F, round.N = 3)
+ez_summarise_quantitative(tbl, n = FALSE, mean = TRUE, sd = TRUE,
+  sem = FALSE, median = FALSE, quantile = FALSE, round.N = 3)
 }
 \arguments{
 \item{tbl}{The input matrix of data you would like to analyze.}

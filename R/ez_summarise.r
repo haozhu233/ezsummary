@@ -28,7 +28,7 @@ ez_summarise <- function(tbl, n=F, round.N=3){
     tbl.c.result <- rename(tbl.c.result, sd_p = percentage)
   }
   tbl.result <- rbind(tbl.q.result, tbl.c.result)
-  tbl.result[sapply(tbl.result, class) == "list"] <- unlist(tbl.result[sapply(tbl.result, class) == "list"])
+  #tbl.result[sapply(tbl.result, class) == "list"] <- unlist(tbl.result[sapply(tbl.result, class) == "list"])
   return(tbl.result)
 }
 

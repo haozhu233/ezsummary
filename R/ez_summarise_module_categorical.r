@@ -56,6 +56,7 @@ ez_summarise_categorical <- function(tbl, n=F, round.N=3){
   }
   attributes(table_export)$n.group <- n.group
   attributes(table_export)$n.var <- n.var
+  rename(table_export, variable = x)
   return(table_export)
 }
 
