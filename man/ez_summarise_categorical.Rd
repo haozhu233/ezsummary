@@ -4,13 +4,21 @@
 \alias{ez_summarise_categorical}
 \title{Easy summary for categorical data}
 \usage{
-ez_summarise_categorical(tbl, n = F, round.N = 3)
+ez_summarise_categorical(tbl, n = FALSE, count = TRUE, p = TRUE,
+  P = FALSE, round.N = 3)
 }
 \arguments{
 \item{tbl}{The input matrix of data you would like to analyze.}
 
 \item{n}{n is a True/False switch that controls whether total counts(N) should be included in
 the output.}
+
+\item{count}{a T/F switch to control if counts should be included}
+
+\item{p}{a T/F switch to control if proportion should be included}
+
+\item{P}{a T/F switch to control if Percentage should be included. This will be a
+character output}
 
 \item{round.N}{Rounding number.}
 }

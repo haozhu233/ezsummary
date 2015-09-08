@@ -13,6 +13,17 @@ ez_summarise_quantitative(tbl, n = FALSE, mean = TRUE, sd = TRUE,
 \item{n}{n is a True/False switch that controls whether counts(N) should be included in
 the output}
 
+\item{mean}{a T/F switch to control whether mean should be calculated}
+
+\item{sd}{a T/F switch to control whether standard deviation should be calculated}
+
+\item{sem}{a T/F switch to control whether standard error of the mean should be calculated}
+
+\item{median}{a T/F switch to control whether median should be calculated}
+
+\item{quantile}{a T/F switch to control whether 0%, 25%, 50%, 75% and 100% quantile should
+be calculated}
+
 \item{round.N}{Rounding Number}
 }
 \value{
