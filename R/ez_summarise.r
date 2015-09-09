@@ -45,6 +45,7 @@ ez_summarise <- function(tbl, n=F, round.N=3){
     tbl_c_result <- rename(tbl_c_result, mean_n = count)
     tbl_q_result <- rename(tbl_q_result, sd_p = sd)
     tbl_c_result <- rename(tbl_c_result, sd_p = p)
+    tbl_c_result$mean_n <- as.list(tbl_c_result$mean_n)
   }
   # Combine the results
   tbl_result <- rbind(tbl_q_result, tbl_c_result)
