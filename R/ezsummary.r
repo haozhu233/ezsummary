@@ -6,7 +6,7 @@
 #' @param round.N Rounding Number
 #'
 #' @export
-ez_summarise <- function(tbl, n=F, round.N=3){
+ezsummary <- function(tbl, n=F, round.N=3){
   # If the input tbl is a vector, convert it to a 1-D data.frame and set it as a 'tbl' (dplyr).
   if(is.vector(tbl)){
     tbl <- as.tbl(as.data.frame(tbl))
@@ -32,11 +32,11 @@ ez_summarise <- function(tbl, n=F, round.N=3){
   tbl_q_result <- NULL
   tbl_c_result <- NULL
   if (length(tbl_q) > n.group){
-    tbl_q_result <- ez_summarise_quantitative(tbl = tbl_q, n=n, round.N = round.N)
+    tbl_q_result <- ezsummary_quantitative(tbl = tbl_q, n=n, round.N = round.N)
     tbl_q_result <- tbl_q_result %>% mutate(variable_backup = variable) %>% separate(variable_backup, c("variable1", "variable2"), sep="($)")
     }
   if (length(tbl_c) > n.group){
-    tbl_c_result <- ez_summarise_categorical(tbl = tbl_c, n=n, round.N = round.N)
+    tbl_c_result <- ezsummary_categorical(tbl = tbl_c, n=n, round.N = round.N)
     tbl_c_result <- tbl_c_result %>% mutate(variable_backup = variable) %>% separate(variable_backup, into = c("variable1", "variable2"), sep="_(?=[^_]*$)")
   }
   # Fix the naming

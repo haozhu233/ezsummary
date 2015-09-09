@@ -21,13 +21,13 @@
 #' The stats summaries are listed in the last few columns.
 #'
 #' @examples
-#' mtcars %>% group_by(am) %>% select(cyl, gear, carb) %>% ez_summarise_categorical()
-#' mtcars %>% select(cyl, gear, carb) %>% ez_summarise_categorical(n=TRUE, round.N = 2)
+#' mtcars %>% group_by(am) %>% select(cyl, gear, carb) %>% ezsummary_categorical()
+#' mtcars %>% select(cyl, gear, carb) %>% ezsummary_categorical(n=TRUE, round.N = 2)
 #'
 #' @export
 
 
-ez_summarise_categorical <- function(tbl, n = FALSE, count = TRUE, p = TRUE, P = FALSE, round.N=3){
+ezsummary_categorical <- function(tbl, n = FALSE, count = TRUE, p = TRUE, P = FALSE, round.N=3){
   # If the input tbl is a vector, convert it to a 1-D data.frame and set it as a 'tbl' (dplyr).
   if(is.vector(tbl)){
     tbl <- as.tbl(as.data.frame(tbl))
