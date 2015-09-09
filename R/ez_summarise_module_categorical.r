@@ -75,7 +75,8 @@ ez_summarise_categorical <- function(tbl, n = FALSE, count = TRUE, p = TRUE, P =
   attributes(table_export)$vars <- attributes(tbl)$vars
   attributes(table_export)$n.group <- n.group
   attributes(table_export)$n.var <- n.var
+  attr(table_export, "class") <- c("tbl_df", "tbl", "data.frame")
+  attr(table_export, "group_sizes") <- NULL
+  attr(table_export, "biggest_group_size") <- NULL
   return(table_export)
 }
-
-

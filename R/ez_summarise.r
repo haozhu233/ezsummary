@@ -24,24 +24,39 @@ ez_summarise <- function(tbl, n=F, round.N=3){
   n.group <- length(group.name)
   n.var <- length(var.name)
 
+  # auto assign var.types if not assigned
   tbl <- auto_var_types(tbl)
-  tbl.q <- tbl[, attributes(tbl)$var_types == "q" | attributes(tbl)$var_types == "g"]
-  tbl.c <- tbl[, attributes(tbl)$var_types == "c" | attributes(tbl)$var_types == "g"]
-  tbl.q.result <- NULL
-  tbl.c.result <- NULL
-  if (length(tbl.q) > n.group){
-    tbl.q.result <- ez_summarise_quantitative(tbl = tbl.q, n=n, round.N = round.N)}
-  if (length(tbl.c) > n.group){
-    tbl.c.result <- ez_summarise_categorical(tbl = tbl.c, n=n, round.N = round.N)}
-  if (!is.null(tbl.q.result) & !is.null(tbl.c.result)){
-    tbl.q.result <- rename(tbl.q.result, mean_n = mean)
-    tbl.c.result <- rename(tbl.c.result, mean_n = count)
-    tbl.q.result <- rename(tbl.q.result, sd_p = sd)
-    tbl.c.result <- rename(tbl.c.result, sd_p = p)
+  # split dataset and do the analyses separately
+  tbl_q <- tbl[, attributes(tbl)$var_types == "q" | attributes(tbl)$var_types == "g"]
+  tbl_c <- tbl[, attributes(tbl)$var_types == "c" | attributes(tbl)$var_types == "g"]
+  tbl_q_result <- NULL
+  tbl_c_result <- NULL
+  if (length(tbl_q) > n.group){
+    tbl_q_result <- ez_summarise_quantitative(tbl = tbl_q, n=n, round.N = round.N)
+    tbl_q_result <- tbl_q_result %>% mutate(variable_backup = variable) %>% separate(variable_backup, c("variable1", "variable2"), sep="($)")
+    }
+  if (length(tbl_c) > n.group){
+    tbl_c_result <- ez_summarise_categorical(tbl = tbl_c, n=n, round.N = round.N)
+    tbl_c_result <- tbl_c_result %>% mutate(variable_backup = variable) %>% separate(variable_backup, into = c("variable1", "variable2"), sep="_(?=[^_]*$)")
   }
-  tbl.result <- rbind(tbl.q.result, tbl.c.result)
-  #tbl.result[sapply(tbl.result, class) == "list"] <- unlist(tbl.result[sapply(tbl.result, class) == "list"])
-  return(tbl.result)
+  # Fix the naming
+  if (!is.null(tbl_q_result) & !is.null(tbl_c_result)){
+    tbl_q_result <- rename(tbl_q_result, mean_n = mean)
+    tbl_c_result <- rename(tbl_c_result, mean_n = count)
+    tbl_q_result <- rename(tbl_q_result, sd_p = sd)
+    tbl_c_result <- rename(tbl_c_result, sd_p = p)
+  }
+  # Combine the results
+  tbl_result <- rbind(tbl_q_result, tbl_c_result)
+
+  # Sort the variables in the order the variables were provided
+  # factorize variable1
+  tbl_result$variable1 <- factor(tbl_result$variable1, levels = var.name)
+  tbl_result <- eval(parse(text = paste0("tbl_result %>% arrange(",
+                                         paste0(c("variable1", group.name, "variable2"), collapse = ", "),
+                                         ")")))
+  tbl_result <- tbl_result %>% select(-variable1, -variable2)
+  return(tbl_result)
 }
 
 

@@ -78,6 +78,9 @@ ez_summarise_quantitative <- function(tbl, n = FALSE, mean = TRUE, sd = TRUE, se
   attributes(table_export)$vars <- group.name
   attributes(table_export)$n.group <- n.group
   attributes(table_export)$n.var <- n.var
+  attr(table_export, "class") <- c("tbl_df", "tbl", "data.frame")
+  attr(table_export, "group_sizes") <- NULL
+  attr(table_export, "biggest_group_size") <- NULL
   return(table_export)
 }
 
