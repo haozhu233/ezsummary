@@ -18,7 +18,7 @@
 #' setting which will put grouping information on the left side of the table. It is more
 #' machine readable and is good to be passed into the next analytical stage if needed.
 #' "Wide" is more print ready (except for column names, which you can fix in the next step,
-#' or fix in LaTex or packages like \code{\link[htmlTable]}). In the "wide" mode, the analyzed
+#' or fix in LaTex or packages like \code{htmlTable}). In the "wide" mode, the analyzed
 #' variable will be the only "ID" variable and all the stats values will be presented ogranized
 #' by the grouping variables (if any). If there is no grouping, the outputs of "wide" and
 #' "long" will be the same.
