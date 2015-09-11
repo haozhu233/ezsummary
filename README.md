@@ -16,13 +16,13 @@ Type
   
 ## To use
 
-The whole concept of this package is to keep everything simple and handy. Here is an example of using this package and `dplyr` to analyze variable `mpg`, `cly` and `disp` in dataset `mtcars` grouped by `am`. Note that `mpg` and `disp` are quantitative variables while `cly` is a qualitative (categorical) variable. 
+The ultimate goal of this package is to keep everything simple and handy. Here is an example of using this package and `dplyr` to analyze variable `mpg`, `cly` and `disp` in dataset `mtcars` grouped by `am`. Note that `mpg` and `disp` are quantitative variables while `cly` is a qualitative (categorical) variable. 
 ``` r
 library(ezsummary)
 results <- mtcars %>% 
   group_by(am) %>%  
     select(mpg, cyl, disp) %>%
-      var_types("cqcq") %>%
+      var_types("cqcq") %>% # tell ezsummary to treat cyl as a categorical variable
       ezsummary()
 results
 ```
@@ -45,7 +45,7 @@ Source: local data frame [10 x 4]
 ```
 You can even reformat the output by using the `ezmarkup` function where each dot represent a column and columns inside a pair of bracket will be combined in the format provided. 
 ``` r
-results %>% ezmarkup("...[. (.)]")
+results %>% ezmarkup("..[. (.)]")
 ```
 Output
 ``` r
