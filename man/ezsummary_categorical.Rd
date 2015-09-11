@@ -5,7 +5,7 @@
 \title{Easy summary for categorical data}
 \usage{
 ezsummary_categorical(tbl, n = FALSE, count = TRUE, p = TRUE, P = FALSE,
-  round.N = 3)
+  round.N = 3, flavor = "long")
 }
 \arguments{
 \item{tbl}{The input matrix of data you would like to analyze.}
@@ -21,6 +21,15 @@ the output.}
 character output}
 
 \item{round.N}{Rounding number.}
+
+\item{flavor}{Flavor has two possible inputs: "long" and "wide". "Long" is the default
+setting which will put grouping information on the left side of the table. It is more
+machine readable and is good to be passed into the next analytical stage if needed.
+"Wide" is more print ready (except for column names, which you can fix in the next step,
+or fix in LaTex or packages like \code{\link[htmlTable]}). In the "wide" mode, the analyzed
+variable will be the only "ID" variable and all the stats values will be presented ogranized
+by the grouping variables (if any). If there is no grouping, the outputs of "wide" and
+"long" will be the same.}
 }
 \value{
 This function will organize all the results into one dataframe. If there are

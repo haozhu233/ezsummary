@@ -5,7 +5,8 @@
 \title{Simple Summary for Quantitative/binary variables}
 \usage{
 ezsummary_quantitative(tbl, n = FALSE, mean = TRUE, sd = TRUE,
-  sem = FALSE, median = FALSE, quantile = FALSE, round.N = 3)
+  sem = FALSE, median = FALSE, quantile = FALSE, round.N = 3,
+  flavor = "long")
 }
 \arguments{
 \item{tbl}{The input matrix of data you would like to analyze.}
@@ -25,6 +26,15 @@ the output}
 be calculated}
 
 \item{round.N}{Rounding Number}
+
+\item{flavor}{Flavor has two possible inputs: "long" and "wide". "Long" is the default
+setting which will put grouping information on the left side of the table. It is more
+machine readable and is good to be passed into the next analytical stage if needed.
+"Wide" is more print ready (except for column names, which you can fix in the next step,
+or fix in LaTex or packages like \code{\link[htmlTable]}). In the "wide" mode, the analyzed
+variable will be the only "ID" variable and all the stats values will be presented ogranized
+by the grouping variables (if any). If there is no grouping, the outputs of "wide" and
+"long" will be the same.}
 }
 \value{
 It will return in the same format as a summarise_each function does

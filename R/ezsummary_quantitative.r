@@ -17,6 +17,14 @@
 #' @param quantile a T/F switch to control whether 0%, 25%, 50%, 75% and 100% quantile should
 #' be calculated
 #' @param round.N Rounding Number
+#' @param flavor Flavor has two possible inputs: "long" and "wide". "Long" is the default
+#' setting which will put grouping information on the left side of the table. It is more
+#' machine readable and is good to be passed into the next analytical stage if needed.
+#' "Wide" is more print ready (except for column names, which you can fix in the next step,
+#' or fix in LaTex or packages like \code{\link[htmlTable]}). In the "wide" mode, the analyzed
+#' variable will be the only "ID" variable and all the stats values will be presented ogranized
+#' by the grouping variables (if any). If there is no grouping, the outputs of "wide" and
+#' "long" will be the same.
 #'
 #' @return It will return in the same format as a summarise_each function does
 #'
@@ -24,13 +32,15 @@
 #' mtcars %>% group_by(am) %>% select(mpg, wt, qsec) %>% ezsummary_quantitative()
 #'
 #' @export
-ezsummary_quantitative <- function(tbl, n = FALSE, mean = TRUE, sd = TRUE, sem = FALSE, median = FALSE, quantile = FALSE, round.N=3){
+ezsummary_quantitative <- function(tbl, n = FALSE, mean = TRUE, sd = TRUE, sem = FALSE, median = FALSE, quantile = FALSE, round.N=3, flavor = "long"){
   # If the input tbl is a vector, convert it to a 1-D data.frame and set it as a 'tbl' (dplyr).
   if(is.vector(tbl)){
     tbl <- as.tbl(as.data.frame(tbl))
     attributes(tbl)$names <- "unknown"
     warning("ezsummary cannot detect the naming information from an atomic vector. Please try to use something like 'select(mtcars, gear)' to replace mtcars$gear in your code.")
   }
+
+  if(flavor != "long" & flavor !="wide"){warning('The value of flavor has to be either "long" or "wide". Now the input is evalued as if you entered "long" by default. Please revise your function inputs!')}
 
   # Try to obtain grouping and variable information from the input tbl
   group.name <- attributes(tbl)$vars
@@ -74,6 +84,15 @@ ezsummary_quantitative <- function(tbl, n = FALSE, mean = TRUE, sd = TRUE, sem =
   # Fix the sorting of variable
   table_export$variable <- factor(table_export$variable, levels = var.name)
   table_export <- arrange(table_export, variable)
+
+  if(flavor == "wide"){
+    for(i in 1:n.group){
+      table_export[,group.name[i]] <- paste(group.name[i], unlist(table_export[,group.name[i]]), sep=".")
+    }
+    table_export <- table_export %>% melt(id.var = c(group.name, "variable"), variable.name = "stats.var")
+    dcast_formula <- paste0("dcast(table_export, variable ~ ", paste0(c(group.name, "stats.var"), collapse = " + "), ")")
+    table_export <- eval(parse(text = dcast_formula))
+  }
 
   attributes(table_export)$vars <- group.name
   attributes(table_export)$n.group <- n.group
