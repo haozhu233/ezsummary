@@ -12,9 +12,14 @@
 #' variable will be the only "ID" variable and all the stats values will be presented ogranized
 #' by the grouping variables (if any). If there is no grouping, the outputs of "wide" and
 #' "long" will be the same.
+#' @param unit_markup When unit_markup is not NULL, it will call the ezmarkup function and
+#' perform column combination here. To make everyone's life easier, I'm using the term "unit"
+#' here. Each unit mean each group of statistical summary results. If you want to
+#' know mean and stand deviation, these two values are your units so you can put something
+#' like "[. (.)]" there
 #'
 #' @export
-ezsummary <- function(tbl, n=F, round.N=3, flavor = "long"){
+ezsummary <- function(tbl, n=F, round.N=3, flavor = "long", unit_markup = NULL){
   # If the input tbl is a vector, convert it to a 1-D data.frame and set it as a 'tbl' (dplyr).
   if(is.vector(tbl)){
     tbl <- as.tbl(as.data.frame(tbl))
@@ -60,22 +65,27 @@ ezsummary <- function(tbl, n=F, round.N=3, flavor = "long"){
   # Combine the results
   tbl_result <- rbind(tbl_q_result, tbl_c_result)
 
-  # Sort the variables in the order the variables were provided
-  # factorize variable1
-  tbl_result$variable1 <- factor(tbl_result$variable1, levels = var.name)
-  tbl_result <- eval(parse(text = paste0("tbl_result %>% arrange(",
-                                         paste0(c("variable1", group.name, "variable2"), collapse = ", "),
-                                         ")")))
-  tbl_result <- tbl_result %>% select(-variable1, -variable2)
+  # Ezmarkup
+  if(!is.null(unit_markup)){
+    ezmarkup_formula <- paste0(paste0(rep(".", 2), collapse = ""), ".", unit_markup, "..")
+    tbl_result <- ezmarkup(tbl_result, ezmarkup_formula)
+  }
 
+  # Turn the table from long to wide if needed
   if(flavor == "wide"){
     for(i in 1:n.group){
       tbl_result[,group.name[i]] <- paste(group.name[i], unlist(tbl_result[,group.name[i]]), sep=".")
     }
-    tbl_result <- tbl_result %>% melt(id.var = c(group.name, "variable"), variable.name = "stats.var")
-    dcast_formula <- paste0("dcast(tbl_result, variable ~ ", paste0(c(group.name, "stats.var"), collapse = " + "), ")")
+    tbl_result <- suppressWarnings(tbl_result %>% melt(id.var = c(group.name, "variable1", "variable2", "variable"), variable.name = "stats.var"))
+    dcast_formula <- paste0("dcast(tbl_result, variable1 + variable2 +variable ~ ", paste0(c(group.name, "stats.var"), collapse = " + "), ")")
     tbl_result <- eval(parse(text = dcast_formula))
   }
+
+  # Sort the variables in the order the variables were provided
+  # factorize variable1
+  tbl_result$variable1 <- factor(tbl_result$variable1, levels = var.name)
+  tbl_result <- tbl_result %>% arrange(variable1, variable2) %>% select(-variable1, -variable2)
+
   return(tbl_result)
 }
 
