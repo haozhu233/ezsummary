@@ -6,7 +6,7 @@
 \usage{
 ezsummary_quantitative(tbl, n = FALSE, mean = TRUE, sd = TRUE,
   sem = FALSE, median = FALSE, quantile = FALSE, round.N = 3,
-  flavor = "long")
+  flavor = "long", unit_markup = NULL)
 }
 \arguments{
 \item{tbl}{The input matrix of data you would like to analyze.}

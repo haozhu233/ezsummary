@@ -25,6 +25,11 @@
 #' variable will be the only "ID" variable and all the stats values will be presented ogranized
 #' by the grouping variables (if any). If there is no grouping, the outputs of "wide" and
 #' "long" will be the same.
+#' @param unit_markup When unit_markup is not NULL, it will call the ezmarkup function and
+#' perform column combination here. To make everyone's life easier, I'm using the term "unit"
+#' here. Each unit mean each group of statistical summary results. If you want to
+#' know mean and stand deviation, these two values are your units so you can put something
+#' like "[. (.)]" there
 #'
 #' @return It will return in the same format as a summarise_each function does
 #'
@@ -32,7 +37,7 @@
 #' mtcars %>% group_by(am) %>% select(mpg, wt, qsec) %>% ezsummary_quantitative()
 #'
 #' @export
-ezsummary_quantitative <- function(tbl, n = FALSE, mean = TRUE, sd = TRUE, sem = FALSE, median = FALSE, quantile = FALSE, round.N=3, flavor = "long"){
+ezsummary_quantitative <- function(tbl, n = FALSE, mean = TRUE, sd = TRUE, sem = FALSE, median = FALSE, quantile = FALSE, round.N=3, flavor = "long", unit_markup = NULL){
   # If the input tbl is a vector, convert it to a 1-D data.frame and set it as a 'tbl' (dplyr).
   if(is.vector(tbl)){
     tbl <- as.tbl(as.data.frame(tbl))
@@ -81,10 +86,13 @@ ezsummary_quantitative <- function(tbl, n = FALSE, mean = TRUE, sd = TRUE, sem =
   dcast_formula <- as.formula(paste0(c(group.name, "variable ~ statistics"), collapse = " + "))
   table_export <- table_export %>% dcast(dcast_formula)
 
-  # Fix the sorting of variable
-  table_export$variable <- factor(table_export$variable, levels = var.name)
-  table_export <- arrange(table_export, variable)
+  # Ezmarkup
+  if(!is.null(unit_markup)){
+    ezmarkup_formula <- paste0(paste0(rep(".", n.group), collapse = ""), ".", unit_markup)
+    table_export <- ezmarkup(table_export, ezmarkup_formula)
+  }
 
+  # Turn the table from long to wide if needed
   if(flavor == "wide"){
     for(i in 1:n.group){
       table_export[,group.name[i]] <- paste(group.name[i], unlist(table_export[,group.name[i]]), sep=".")
@@ -93,6 +101,10 @@ ezsummary_quantitative <- function(tbl, n = FALSE, mean = TRUE, sd = TRUE, sem =
     dcast_formula <- paste0("dcast(table_export, variable ~ ", paste0(c(group.name, "stats.var"), collapse = " + "), ")")
     table_export <- eval(parse(text = dcast_formula))
   }
+
+  # Fix the sorting of variable
+  table_export$variable <- factor(table_export$variable, levels = var.name)
+  table_export <- arrange(table_export, variable)
 
   attributes(table_export)$vars <- group.name
   attributes(table_export)$n.group <- n.group

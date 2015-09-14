@@ -22,6 +22,11 @@
 #' variable will be the only "ID" variable and all the stats values will be presented ogranized
 #' by the grouping variables (if any). If there is no grouping, the outputs of "wide" and
 #' "long" will be the same.
+#' @param unit_markup When unit_markup is not NULL, it will call the ezmarkup function and
+#' perform column combination here. To make everyone's life easier, I'm using the term "unit"
+#' here. Each unit mean each group of statistical summary results. If you want to
+#' know mean and stand deviation, these two values are your units so you can put something
+#' like "[. (.)]" there
 #'
 #' @return This function will organize all the results into one dataframe. If there are
 #' any group_by variables, the first few columns will be them. After these, the varible
@@ -35,7 +40,7 @@
 #' @export
 
 
-ezsummary_categorical <- function(tbl, n = FALSE, count = TRUE, p = TRUE, P = FALSE, round.N=3, flavor = "long"){
+ezsummary_categorical <- function(tbl, n = FALSE, count = TRUE, p = TRUE, P = FALSE, round.N=3, flavor = "long", unit_markup = NULL){
   # If the input tbl is a vector, convert it to a 1-D data.frame and set it as a 'tbl' (dplyr).
   if(is.vector(tbl)){
     tbl <- as.tbl(as.data.frame(tbl))
@@ -80,6 +85,12 @@ ezsummary_categorical <- function(tbl, n = FALSE, count = TRUE, p = TRUE, P = FA
   for (i in 1:n.var) {
     table_export <- rbind(table_export,
       eval(parse(text = calculation_formula_generator(var.name[i],group.name, options, option_switches))))
+  }
+
+  # Ezmarkup
+  if(!is.null(unit_markup)){
+    ezmarkup_formula <- paste0(paste0(rep(".", n.group), collapse = ""), ".", unit_markup)
+    table_export <- ezmarkup(table_export, ezmarkup_formula)
   }
 
   if(flavor == "wide"){

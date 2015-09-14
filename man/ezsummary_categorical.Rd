@@ -5,7 +5,7 @@
 \title{Easy summary for categorical data}
 \usage{
 ezsummary_categorical(tbl, n = FALSE, count = TRUE, p = TRUE, P = FALSE,
-  round.N = 3, flavor = "long")
+  round.N = 3, flavor = "long", unit_markup = NULL)
 }
 \arguments{
 \item{tbl}{The input matrix of data you would like to analyze.}

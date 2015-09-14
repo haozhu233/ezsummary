@@ -67,7 +67,7 @@ ezsummary <- function(tbl, n=F, round.N=3, flavor = "long", unit_markup = NULL){
 
   # Ezmarkup
   if(!is.null(unit_markup)){
-    ezmarkup_formula <- paste0(paste0(rep(".", 2), collapse = ""), ".", unit_markup, "..")
+    ezmarkup_formula <- paste0(paste0(rep(".", n.group), collapse = ""), ".", unit_markup, "..")
     tbl_result <- ezmarkup(tbl_result, ezmarkup_formula)
   }
 
