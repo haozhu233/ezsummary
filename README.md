@@ -23,25 +23,17 @@ results <- mtcars %>%
   group_by(am) %>%  
     select(mpg, cyl, disp) %>%
       var_types("cqcq") %>% # tell ezsummary to treat cyl as a categorical variable
-      ezsummary()
+      ezsummary(flavor = "wide", unit_markup = "[. (.)]")
 results
 ```
 See the output:
 ``` r
-Source: local data frame [10 x 4]
-
-      am variable  mean_n    sd_p
-   (dbl)   (fctr)  (fctr)   (dbl)
-1      0      mpg  17.147   3.834
-2      1      mpg  24.392   6.167
-3      0    cyl_4       3   0.158
-4      0    cyl_6       4   0.211
-5      0    cyl_8      12   0.632
-6      1    cyl_4       8   0.615
-7      1    cyl_6       3   0.231
-8      1    cyl_8       2   0.154
-9      0     disp 290.379 110.172
-10     1     disp 143.531  87.204
+  variable am.0_mean_n (sd_p) am.1_mean_n (sd_p)
+1      mpg     17.147 (3.834)     24.392 (6.167)
+2    cyl_4          3 (0.158)          8 (0.615)
+3    cyl_6          4 (0.211)          3 (0.231)
+4    cyl_8         12 (0.632)          2 (0.154)
+5     disp  290.379 (110.172)   143.531 (87.204)
 ```
 You can even reformat the output by using the `ezmarkup` function where each dot represent a column and columns inside a pair of bracket will be combined in the format provided. 
 ``` r
