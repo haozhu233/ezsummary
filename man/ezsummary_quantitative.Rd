@@ -35,6 +35,12 @@ or fix in LaTex or packages like \code{htmlTable}). In the "wide" mode, the anal
 variable will be the only "ID" variable and all the stats values will be presented ogranized
 by the grouping variables (if any). If there is no grouping, the outputs of "wide" and
 "long" will be the same.}
+
+\item{unit_markup}{When unit_markup is not NULL, it will call the ezmarkup function and
+perform column combination here. To make everyone's life easier, I'm using the term "unit"
+here. Each unit mean each group of statistical summary results. If you want to
+know mean and stand deviation, these two values are your units so you can put something
+like "[. (.)]" there}
 }
 \value{
 It will return in the same format as a summarise_each function does
