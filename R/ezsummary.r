@@ -3,6 +3,9 @@
 #' @param tbl The input matrix of data you would like to analyze.
 #' @param n n is a True/False switch that controls whether counts(N) should be included in
 #' the output
+#' @param sem Standard Error of the mean
+#' @param median Median
+#' @param quantile 0,25,50,75,100 percentile
 #' @param round.N Rounding Number
 #' @param flavor Flavor has two possible inputs: "long" and "wide". "Long" is the default
 #' setting which will put grouping information on the left side of the table. It is more
@@ -19,7 +22,7 @@
 #' like "[. (.)]" there
 #'
 #' @export
-ezsummary <- function(tbl, n=F, round.N=3, flavor = "long", unit_markup = NULL){
+ezsummary <- function(tbl, n = F, sem = F, median = F, quantile = F, round.N = 3, flavor = "long", unit_markup = NULL){
   # If the input tbl is a vector, convert it to a 1-D data.frame and set it as a 'tbl' (dplyr).
   if(is.vector(tbl)){
     tbl <- as.tbl(as.data.frame(tbl))
@@ -45,7 +48,7 @@ ezsummary <- function(tbl, n=F, round.N=3, flavor = "long", unit_markup = NULL){
   tbl_q_result <- NULL
   tbl_c_result <- NULL
   if (length(tbl_q) > n.group){
-    tbl_q_result <- ezsummary_quantitative(tbl = tbl_q, n=n, round.N = round.N)
+    tbl_q_result <- ezsummary_quantitative(tbl = tbl_q, n=n, sem=sem, median=median, quantile = quantile, round.N = round.N)
     tbl_q_result <- tbl_q_result %>% mutate(variable_backup = variable) %>% separate(variable_backup, c("variable1", "variable2"), sep="($)")
     }
   if (length(tbl_c) > n.group){
@@ -63,7 +66,7 @@ ezsummary <- function(tbl, n=F, round.N=3, flavor = "long", unit_markup = NULL){
     tbl_c_result$mean_n <- factor(tbl_c_result$mean_n)
   }
   # Combine the results
-  tbl_result <- rbind(tbl_q_result, tbl_c_result)
+  tbl_result <- suppressWarnings(rbind_all(list(tbl_q_result, tbl_c_result)))
 
   # Ezmarkup
   if(!is.null(unit_markup)){

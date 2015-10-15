@@ -39,9 +39,9 @@ auto_var_types <- function(tbl){
   col_class <- sapply(tbl, class)
   if (sum(attributes(tbl)$var_types == "q" & col_class == "character") > 0){
     if(sum(attributes(tbl)$var_types == "q" & col_class == "character") == 1){
-      warning(paste("Variable", paste(names(which(attributes(tbl)$var_types == "q" & col_class == "character")), sep="", collapse = ", " ), "is a character variable. It is analyzed as a categorical variable by default. "))
+      message(paste("Variable", paste(names(which(attributes(tbl)$var_types == "q" & col_class == "character")), sep="", collapse = ", " ), "is a character variable. It is analyzed as a categorical variable by default. "))
     }else{
-      warning(paste("Variable", paste(names(which(attributes(tbl)$var_types == "q" & col_class == "character")), sep="", collapse = ", " ), "are character variables. They are analyzed as categorical variables by default. "))
+      message(paste("Variable", paste(names(which(attributes(tbl)$var_types == "q" & col_class == "character")), sep="", collapse = ", " ), "are character variables. They are analyzed as categorical variables by default. "))
     }
     attributes(tbl)$var_types[attributes(tbl)$var_types == "q" & attributes(tbl)$col_class == "character"]<-"c"
   }
