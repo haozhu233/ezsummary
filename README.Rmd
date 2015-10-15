@@ -19,13 +19,13 @@ Travis CI: [![Build Status](https://travis-ci.org/haozhu233/ezsummary.svg?branch
 
 
 ## Introduction
-Hadley's `dplyr` is very powerful and the "ecosystem" around it, such as `reshape2` and `tidyr`, makes it even better. However, there is still a distance between the direct outputs of `dplyr` and a print-ready tabular display, which can be used directly in `Shiny` or `rmarkdown`. Basically, the concept of this package is kind of similar with the concept of David Robinson's `broom` package but this one is focusing on the summary part.  
+Hadley's `dplyr` is very powerful and the "ecosystem" around it, such as `reshape2` and `tidyr`, makes it even better. However, there is still a short distance between the direct outputs of `dplyr` and something can be used directly in `Shiny` or `rmarkdown`. Basically, the concept of this package is kind of similar with the concept of David Robinson's `broom` package but this one focuses on the summary part.  
 
 When we are talking about statistical summary, there are always two types of data: quantitative (continuous) and qualitative (categorical). As your college Stats class may have told you, the common ways we used to look at these two types of data are different. For quantitative data, we want to know the mean, standard deviation and some other things while for categorical data, we want to know the number of items in each category and the percentage.  
 
 As investigators or data scientists, we are encountering these two kinds of data everyday. The traditional way is to do the analyses separately and spend some time later on "gluing" the results together. Believe me or not, this step actually takes a lot of time especially if you are doing it everyday.
 
-This package addresses this issue by preprogramming the common summary task in a way that "makes sense" and offers tools to help you format your table in a easier way. It is depends on `dplyr` and `reshape2`, so it's very fast. Also, this package uses `dplyr`'s piping syntax and the functions inside this package can interact with other `dplyr` functions pretty well. You will feel codes flow out of your fingertips after you get used to it. 
+This package addresses this issue by pre-programming the common summary task in a way that "makes sense" and offers tools to help you format your table in a easier way. It is depends on `dplyr` and `reshape2`, so it's very fast. Also, this package uses `dplyr`'s piping syntax and the functions inside this package can interact with other `dplyr` functions pretty well. You will feel codes flow out of your fingertips after you get used to it. 
 
 ## To install
 Type  
@@ -35,6 +35,8 @@ Type
 ```
   
 ## To use
+
+### Basics
 
 First of all, in this package, I use **q** to stand for "quantitative" and **c** to stand for "categorical" instead of the reverse way. The reason is simple: "quantitative" gives 112 million google results while "qualitative" only gives me 67 million. (I hope there could be better ways to make these two terms more distinctive but "continuous" vs "categorical"? No way...)
 
@@ -66,7 +68,7 @@ kable(
   )
 ```
 
-
+### Advanced
 If you are doing analyses by group, like the example above, by the default setting of `ezsummary`, you will get a "tidy" formated table of results, in which the grouping information are listed as column(s) on the left. This format allows you to keep process your results. If you want the grouping information to be organized into row.names and makes the table wider, which is more "publish ready", you should use the `flavor` option. There are two options available, "long" and "wide".
 
 ```{r}
@@ -111,6 +113,7 @@ kable(
   )
 ```
 
+### Easy Summary
 Finally, here comes our `ezsummary` function. By default, `ezsummary` acts just like a regular `ezsummary_quantitative` function, except when a column is not numeric, it will treat that colum as a categorical variable. As a result, `ezsummary` is supposed to be workable in any cases and can successfully reduce the chance of getting embarrassed by applying `mean` on a column of names. To make it better, you can pass a string of data types to `ezsummary` by using the `var_types` function. Again, read after me, "q" stands for a qualitative and continuous variable while "c" stands for a categorical and qualitative variable. Another thing you should pay attention is that the grouping variable should also take a slot. You are recommended to assign it as a categorical variable. Here are two examples. 
 
 ```{r}
