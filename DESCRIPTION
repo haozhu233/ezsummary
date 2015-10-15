@@ -4,7 +4,7 @@ Title: Summarise Data in the Quick and Easy Way
 Version: 0.1.6
 Authors@R: person("Hao", "Zhu", email = "haozhu@hsl.harvard.com", role = c("aut", "cre"))
 Description: Functions that can simplie the most common descriptive analyses quests.
-License: GPL (>=2)
+License: MIT + file LICENSE
 LazyData: TRUE
 Depends:
   R (>= 3.1.2),
