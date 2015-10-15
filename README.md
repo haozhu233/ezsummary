@@ -30,13 +30,14 @@ To use
 
 ### Basics
 
-First of all, in this package, I use **q** to stand for "quantitative" and **c** to stand for "categorical" instead of the reverse way. The reason is simple: "quantitative" gives 112 million google results while "qualitative" only gives me 67 million. (I hope there could be better ways to make these two terms more distinctive but "continuous" vs "categorical"? No way...)
+First of all, in this package, I use **q** to stand for "quantitative" and **c** to stand for "categorical" instead of the reverse way. The reason is simple: "quantitative" gives 112 million google results while "qualitative" only gives me 67 million. (I hope there could be better ways to make these two terms more distinctive but "continuous" vs "categorical"? really?...)
 
 The major functions in `ezsummary` include
 
--   **`ezsummary`** & var\_types
+-   **`ezsummary`**
 -   `ezsummary_categorical`
 -   `ezsummary_quantitative`
+-   `var_types`
 -   **`ezmarkup`**
 
 Both `ezsummary_categorical` and `ezsummar_quantitative` can be used independently. By default, `ezsummary_categorical` will give you the count and proportion of each category. If you want to know total counts, you will need to set the option `n = T`. If you want to display Percentage instead of proportion, you will need to disable proportion by `p = F` and enable Percentage by `P = T`. Similarly, `ezsummary_quantitative` works in the same way but it has more options, including standard error of the mean(SEM) `sem`, `median` and `quantile`. You can adjust the rounding by using `round.N`. Here are two examples using our beloved `mtcars`.
