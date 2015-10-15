@@ -4,13 +4,20 @@
 \alias{ezsummary}
 \title{Quick and Easy summarise function}
 \usage{
-ezsummary(tbl, n = F, round.N = 3, flavor = "long", unit_markup = NULL)
+ezsummary(tbl, n = F, sem = F, median = F, quantile = F, round.N = 3,
+  flavor = "long", unit_markup = NULL)
 }
 \arguments{
 \item{tbl}{The input matrix of data you would like to analyze.}
 
 \item{n}{n is a True/False switch that controls whether counts(N) should be included in
 the output}
+
+\item{sem}{Standard Error of the mean}
+
+\item{median}{Median}
+
+\item{quantile}{0,25,50,75,100 percentile}
 
 \item{round.N}{Rounding Number}
 

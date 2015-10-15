@@ -25,7 +25,7 @@ When we are talking about statistical summary, there are always two types of dat
 
 As investigators or data scientists, we are encountering these two kinds of data everyday. The traditional way is to do the analyses separately and spend some time later on "gluing" the results together. Believe me or not, this step actually takes a lot of time especially if you are doing it everyday.
 
-This package addresses this issue by preprogramming the common summary task in a way that "makes sense" and offers tools to help you format your table in a easier way. It is depends on `dplyr` and `reshape2`, so it's very fast. Also, this package uses `dplyr`'s piping syntax and the functions inside this package can interact with other `dplyr` functions pretty well. 
+This package addresses this issue by preprogramming the common summary task in a way that "makes sense" and offers tools to help you format your table in a easier way. It is depends on `dplyr` and `reshape2`, so it's very fast. Also, this package uses `dplyr`'s piping syntax and the functions inside this package can interact with other `dplyr` functions pretty well. You will feel codes flow out of your fingertips after you get used to it. 
 
 ## To install
 Type  
@@ -69,7 +69,7 @@ kable(
 
 If you are doing analyses by group, like the example above, by the default setting of `ezsummary`, you will get a "tidy" formated table of results, in which the grouping information are listed as column(s) on the left. This format allows you to keep process your results. If you want the grouping information to be organized into row.names and makes the table wider, which is more "publish ready", you should use the `flavor` option. There are two options available, "long" and "wide".
 
-```{r, message=F}
+```{r}
 kable(
   mtcars %>%
   group_by(am) %>%
@@ -82,7 +82,7 @@ kable(
 
 Now you feel like it is not that easy to read mean and sem on the same row. Well, we have `ezmarkup`. In this function, we use a dot `.` to represent a column and use a pair of bracket `[]` to represent you want to __"squeeze"__ the columns inside into one. Any other symbols and characters within a pair of bracket will be copied into the same cell as well. It allows us to do advanced formatting settings in a very convenient way. Also, if you use the `unit_markup` option within the `ezsummary` functions, it will give you the same results. In that case, instead of typing in the markup pattern for every column, you just need to type the pattern for each pair of analysis you want to do. Here are two examples. 
 
-```{r, message=F}
+```{r}
 kable(
   mtcars %>%
   group_by(am) %>%
@@ -111,47 +111,23 @@ kable(
   )
 ```
 
-Finally, here comes our `ezsummary` function, 
+Finally, here comes our `ezsummary` function. By default, `ezsummary` acts just like a regular `ezsummary_quantitative` function, except when a column is not numeric, it will treat that colum as a categorical variable. As a result, `ezsummary` is supposed to be workable in any cases and can successfully reduce the chance of getting embarrassed by applying `mean` on a column of names. To make it better, you can pass a string of data types to `ezsummary` by using the `var_types` function. Again, read after me, "q" stands for a qualitative and continuous variable while "c" stands for a categorical and qualitative variable. Another thing you should pay attention is that the grouping variable should also take a slot. You are recommended to assign it as a categorical variable. Here are two examples. 
 
+```{r}
+kable(
+  mtcars %>% as_data_frame() %>% 
+    mutate(am = as.character(am)) %>% 
+    ezsummary(unit_markup = "[. (.)]")
+)
 
-```{r, message=F}
-demo <- mtcars %>% 
-  group_by(am) %>%  
-    select(mpg, cyl, disp) %>%
-      var_types("cqcq") # tell ezsummary to treat cyl as a categorical variable
-
-results <- demo %>% ezsummary()
-kable(results)
+kable(
+  mtcars %>% 
+    group_by(am) %>%
+    select(mpg, cyl, disp, hp, vs) %>%
+    var_types("cqcqqc") %>%
+    ezsummary(unit_markup = "[. (.)]", flavor="wide", round.N = 2)
+)
 ```
-
-
-```{r, message=F}
-library(ezsummary)
-
-demo <- mtcars %>% 
-  group_by(am) %>%  
-    select(mpg, cyl, disp) %>%
-      var_types("cqcq") # tell ezsummary to treat cyl as a categorical variable
-
-results <- demo %>% ezsummary()
-kable(results)
-```
-
-You can configue the options to make the output more "print ready". Feature Options include:  
-
-* flavor: "long" or "wide"  
-
-    + The "long" format is more tidy and is more machine readable. In this format, grouping variable(s) and the variable-name variable are the ID variables and organized in the first several columns of the table. It is the default export flavor for ezsummary and it sub-functions.   
-    
-    + The "wide" format is more "print ready" version of the output. In this format, the only ID variable is the variable-name variable and all of the grouping info will be put into the column names.   
-    
-* unit_markup: If you want to organize each sets of mean and stand deviation into a format like "mean (sd)", you can set the value of this option as "[. (.)]". Here, each dot represents a column and the bracket means that you want to squeeze those two columns inside the bracket into one. You can even do "[.<sup>.</sup>]" to turn the second element as the superscription of the first element.   
-
-```{r, message=F}
-results_formatted <- demo %>% ezsummary(flavor = "wide", unit_markup = "[. (.)]")
-kable(results_formatted)
-```
-
 
 
 ## Issues

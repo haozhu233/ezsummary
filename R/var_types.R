@@ -32,18 +32,12 @@ var_types <- function(tbl, types){
 #'
 #' @export
 auto_var_types <- function(tbl){
-  if(is.null(attributes(tbl)$var_types)){attributes(tbl)$var_types <- rep("q", ncol(tbl))}
+  col_class <- sapply(tbl, class)
+  if(is.null(attributes(tbl)$var_types)){
+    attributes(tbl)$var_types <- ifelse(col_class == "numeric", "q", "c")
+    }
   if (length(attributes(tbl)$vars) != 0){
     attributes(tbl)$var_types[names(tbl) %in% attributes(tbl)$vars]<-"g"
-  }
-  col_class <- sapply(tbl, class)
-  if (sum(attributes(tbl)$var_types == "q" & col_class == "character") > 0){
-    if(sum(attributes(tbl)$var_types == "q" & col_class == "character") == 1){
-      message(paste("Variable", paste(names(which(attributes(tbl)$var_types == "q" & col_class == "character")), sep="", collapse = ", " ), "is a character variable. It is analyzed as a categorical variable by default. "))
-    }else{
-      message(paste("Variable", paste(names(which(attributes(tbl)$var_types == "q" & col_class == "character")), sep="", collapse = ", " ), "are character variables. They are analyzed as categorical variables by default. "))
-    }
-    attributes(tbl)$var_types[attributes(tbl)$var_types == "q" & attributes(tbl)$col_class == "character"]<-"c"
   }
   return(tbl)
 }

@@ -13,7 +13,7 @@ When we are talking about statistical summary, there are always two types of dat
 
 As investigators or data scientists, we are encountering these two kinds of data everyday. The traditional way is to do the analyses separately and spend some time later on "gluing" the results together. Believe me or not, this step actually takes a lot of time especially if you are doing it everyday.
 
-This package addresses this issue by preprogramming the common summary task in a way that "makes sense" and offers tools to help you format your table in a easier way. It is depends on `dplyr` and `reshape2`, so it's very fast. Also, this package uses `dplyr`'s piping syntax and the functions inside this package can interact with other `dplyr` functions pretty well.
+This package addresses this issue by preprogramming the common summary task in a way that "makes sense" and offers tools to help you format your table in a easier way. It is depends on `dplyr` and `reshape2`, so it's very fast. Also, this package uses `dplyr`'s piping syntax and the functions inside this package can interact with other `dplyr` functions pretty well. You will feel codes flow out of your fingertips after you get used to it.
 
 To install
 ----------
@@ -96,7 +96,7 @@ kable(
 
 (You may have notived that I'm using dot to separate grouping variable name and option and using underscore to separate grouping info and stats names. As as result, it will be a little easier for people who are not that familar with `regex` to cut the names and reshape the results.)
 
-Now you feel like it is not that easy to read mean and sem on the same row. Well, we have `ezmarkup`. In this function, we use a dot `.` to represent a column and use a pair of bracket `[]` to represent you want to **"squeeze"** the columns inside into one. Any other symbols and characters within a pair of bracket will be copied into the same cell as well. It allows us to do advanced formatting settings in a very convenient way. Here are two examples.
+Now you feel like it is not that easy to read mean and sem on the same row. Well, we have `ezmarkup`. In this function, we use a dot `.` to represent a column and use a pair of bracket `[]` to represent you want to **"squeeze"** the columns inside into one. Any other symbols and characters within a pair of bracket will be copied into the same cell as well. It allows us to do advanced formatting settings in a very convenient way. Also, if you use the `unit_markup` option within the `ezsummary` functions, it will give you the same results. In that case, instead of typing in the markup pattern for every column, you just need to type the pattern for each pair of analysis you want to do. Here are two examples.
 
 ``` r
 kable(
@@ -116,6 +116,15 @@ kable(
 
 ``` r
 
+# The following code will have the almost the same results: -------------
+#
+# kable(
+#   mtcars %>%
+#   group_by(am) %>%
+#   select(mpg, wt, hp) %>%
+#   ezsummary_quantitative(sd = F, sem = T, round.N = 1, flavor = "wide", unit_markup = "[. (.)]")
+#   )
+
 kable(
   mtcars %>%
   group_by(am) %>%
@@ -133,76 +142,52 @@ kable(
 | wt       | 3.8 <sub>0.2</sub>              | 2.4 <sub>0.2</sub>              |
 | hp       | 160.3 <sub>12.4</sub>           | 126.8 <sub>23.3</sub>           |
 
-``` r
-demo <- mtcars %>% 
-  group_by(am) %>%  
-    select(mpg, cyl, disp) %>%
-      var_types("cqcq") # tell ezsummary to treat cyl as a categorical variable
+Finally, here comes our `ezsummary` function. By default, `ezsummary` acts just like a regular `ezsummary_quantitative` function, except when a column is not numeric, it will treat that colum as a categorical variable. As a result, `ezsummary` is supposed to be workable in any cases and can successfully reduce the chance of getting embarrassed by applying `mean` on a column of names. To make it better, you can pass a string of data types to `ezsummary` by using the `var_types` function. Again, read after me, "q" stands for a qualitative and continuous variable while "c" stands for a categorical and qualitative variable. Another thing you should pay attention is that the grouping variable should also take a slot. You are recommended to assign it as a categorical variable. Here are two examples.
 
-results <- demo %>% ezsummary()
-kable(results)
+``` r
+kable(
+  mtcars %>% as_data_frame() %>% 
+    mutate(am = as.character(am)) %>% 
+    ezsummary(unit_markup = "[. (.)]")
+)
 ```
 
-|   am| variable | mean\_n |    sd\_p|
-|----:|:---------|:--------|--------:|
-|    0| mpg      | 17.147  |    3.834|
-|    1| mpg      | 24.392  |    6.167|
-|    0| cyl\_4   | 3       |    0.158|
-|    1| cyl\_4   | 8       |    0.615|
-|    0| cyl\_6   | 4       |    0.211|
-|    1| cyl\_6   | 3       |    0.231|
-|    0| cyl\_8   | 12      |    0.632|
-|    1| cyl\_8   | 2       |    0.154|
-|    0| disp     | 290.379 |  110.172|
-|    1| disp     | 143.531 |   87.204|
+| variable | mean\_n (sd\_p)   |
+|:---------|:------------------|
+| mpg      | 20.091 (6.027)    |
+| cyl      | 6.188 (1.786)     |
+| disp     | 230.722 (123.939) |
+| hp       | 146.688 (68.563)  |
+| drat     | 3.597 (0.535)     |
+| wt       | 3.217 (0.978)     |
+| qsec     | 17.849 (1.787)    |
+| vs       | 0.438 (0.504)     |
+| am\_0    | 19 (0.594)        |
+| am\_1    | 13 (0.406)        |
+| gear     | 3.688 (0.738)     |
+| carb     | 2.812 (1.615)     |
 
 ``` r
-library(ezsummary)
 
-demo <- mtcars %>% 
-  group_by(am) %>%  
-    select(mpg, cyl, disp) %>%
-      var_types("cqcq") # tell ezsummary to treat cyl as a categorical variable
-
-results <- demo %>% ezsummary()
-kable(results)
-```
-
-|   am| variable | mean\_n |    sd\_p|
-|----:|:---------|:--------|--------:|
-|    0| mpg      | 17.147  |    3.834|
-|    1| mpg      | 24.392  |    6.167|
-|    0| cyl\_4   | 3       |    0.158|
-|    1| cyl\_4   | 8       |    0.615|
-|    0| cyl\_6   | 4       |    0.211|
-|    1| cyl\_6   | 3       |    0.231|
-|    0| cyl\_8   | 12      |    0.632|
-|    1| cyl\_8   | 2       |    0.154|
-|    0| disp     | 290.379 |  110.172|
-|    1| disp     | 143.531 |   87.204|
-
-You can configue the options to make the output more "print ready". Feature Options include:
-
--   flavor: "long" or "wide"
-
-    -   The "long" format is more tidy and is more machine readable. In this format, grouping variable(s) and the variable-name variable are the ID variables and organized in the first several columns of the table. It is the default export flavor for ezsummary and it sub-functions.
-
-    -   The "wide" format is more "print ready" version of the output. In this format, the only ID variable is the variable-name variable and all of the grouping info will be put into the column names.
-
--   unit\_markup: If you want to organize each sets of mean and stand deviation into a format like "mean (sd)", you can set the value of this option as "\[. (.)\]". Here, each dot represents a column and the bracket means that you want to squeeze those two columns inside the bracket into one. You can even do "\[.<sup>.</sup>\]" to turn the second element as the superscription of the first element.
-
-``` r
-results_formatted <- demo %>% ezsummary(flavor = "wide", unit_markup = "[. (.)]")
-kable(results_formatted)
+kable(
+  mtcars %>% 
+    group_by(am) %>%
+    select(mpg, cyl, disp, hp, vs) %>%
+    var_types("cqcqqc") %>%
+    ezsummary(unit_markup = "[. (.)]", flavor="wide", round.N = 2)
+)
 ```
 
 | variable | am.0\_mean\_n (sd\_p) | am.1\_mean\_n (sd\_p) |
 |:---------|:----------------------|:----------------------|
-| mpg      | 17.147 (3.834)        | 24.392 (6.167)        |
-| cyl\_4   | 3 (0.158)             | 8 (0.615)             |
-| cyl\_6   | 4 (0.211)             | 3 (0.231)             |
-| cyl\_8   | 12 (0.632)            | 2 (0.154)             |
-| disp     | 290.379 (110.172)     | 143.531 (87.204)      |
+| mpg      | 17.15 (3.83)          | 24.39 (6.17)          |
+| cyl\_4   | 3 (0.16)              | 8 (0.62)              |
+| cyl\_6   | 4 (0.21)              | 3 (0.23)              |
+| cyl\_8   | 12 (0.63)             | 2 (0.15)              |
+| disp     | 290.38 (110.17)       | 143.53 (87.2)         |
+| hp       | 160.26 (53.91)        | 126.85 (84.06)        |
+| vs\_0    | 12 (0.63)             | 6 (0.46)              |
+| vs\_1    | 7 (0.37)              | 7 (0.54)              |
 
 Issues
 ------

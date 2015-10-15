@@ -8,7 +8,7 @@ df4 <- mtcars %>% group_by(am) %>% select(mpg, hp)
 
 test_that("ezsummary_quantitative can work correctly with 1 variable and no grouping data", {
   expected_data_frame_no_N <- data.frame(variable = "mpg", mean = 20.091, sd = 6.027)
-  expected_data_frame_N <- data.frame(variable = "mpg", N=32L, mean = 20.091, sd = 6.027)
+  expected_data_frame_N <- data.frame(variable = "mpg", N=32, mean = 20.091, sd = 6.027)
 
   expect_equivalent(ezsummary_quantitative(df), expected = expected_data_frame_no_N)
   expect_equivalent(ezsummary_quantitative(df, n = T), expected = expected_data_frame_N)
