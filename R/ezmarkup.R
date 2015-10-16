@@ -20,6 +20,7 @@
 #' you would like to add.
 #'
 #' @examples
+#' library(dplyr)
 #' dt <- mtcars %>% group_by(cyl) %>% select(gear, carb) %>% ezsummary_categorical(n=TRUE)
 #'
 #' ezmarkup(dt, "...[.(.)]")

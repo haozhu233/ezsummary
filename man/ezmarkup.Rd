@@ -29,6 +29,7 @@ as I know, so far there isn't a straight forward function to deal with this
 need. This function is built to address this issue.
 }
 \examples{
+library(dplyr)
 dt <- mtcars \%>\% group_by(cyl) \%>\% select(gear, carb) \%>\% ezsummary_categorical(n=TRUE)
 
 ezmarkup(dt, "...[.(.)]")

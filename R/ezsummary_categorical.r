@@ -34,6 +34,7 @@
 #' The stats summaries are listed in the last few columns.
 #'
 #' @examples
+#' library(dplyr)
 #' mtcars %>% group_by(am) %>% select(cyl, gear, carb) %>% ezsummary_categorical()
 #' mtcars %>% select(cyl, gear, carb) %>% ezsummary_categorical(n=TRUE, round.N = 2)
 #'

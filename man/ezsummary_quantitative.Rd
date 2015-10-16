@@ -54,6 +54,7 @@ we just want to know the most basic statistical summary, this function can save 
 typing time. It also provide the option to include number of subjects inside the analyses.
 }
 \examples{
+library(dplyr)
 mtcars \%>\% group_by(am) \%>\% select(mpg, wt, qsec) \%>\% ezsummary_quantitative()
 }
 

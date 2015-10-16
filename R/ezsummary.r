@@ -21,8 +21,13 @@
 #' know mean and stand deviation, these two values are your units so you can put something
 #' like "[. (.)]" there
 #'
+#' @import dplyr
+#' @importFrom reshape2 melt dcast
+#' @importFrom tidyr separate
 #' @export
 ezsummary <- function(tbl, n = F, sem = F, median = F, quantile = F, round.N = 3, flavor = "long", unit_markup = NULL){
+  # Define the following variable to avoid NOTE on RMD check
+  variable = variable_backup = variable1 = variable2 = p = NULL
   # If the input tbl is a vector, convert it to a 1-D data.frame and set it as a 'tbl' (dplyr).
   if(is.vector(tbl)){
     tbl <- as.tbl(as.data.frame(tbl))

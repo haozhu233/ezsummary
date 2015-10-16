@@ -34,10 +34,13 @@
 #' @return It will return in the same format as a summarise_each function does
 #'
 #' @examples
+#' library(dplyr)
 #' mtcars %>% group_by(am) %>% select(mpg, wt, qsec) %>% ezsummary_quantitative()
 #'
 #' @export
 ezsummary_quantitative <- function(tbl, n = FALSE, mean = TRUE, sd = TRUE, sem = FALSE, median = FALSE, quantile = FALSE, round.N=3, flavor = "long", unit_markup = NULL){
+  # Define the following variable to avoid NOTE on RMD check
+  variable = NULL
   # If the input tbl is a vector, convert it to a 1-D data.frame and set it as a 'tbl' (dplyr).
   if(is.vector(tbl)){
     tbl <- as.tbl(as.data.frame(tbl))

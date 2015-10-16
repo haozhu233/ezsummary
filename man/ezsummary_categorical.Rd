@@ -51,6 +51,7 @@ one/multiple group_by variables, the percentage and count will be calculated wit
 the defined groups.
 }
 \examples{
+library(dplyr)
 mtcars \%>\% group_by(am) \%>\% select(cyl, gear, carb) \%>\% ezsummary_categorical()
 mtcars \%>\% select(cyl, gear, carb) \%>\% ezsummary_categorical(n=TRUE, round.N = 2)
 }
