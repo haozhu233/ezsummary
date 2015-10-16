@@ -24,6 +24,8 @@
 #' @import dplyr
 #' @importFrom reshape2 melt dcast
 #' @importFrom tidyr separate
+#' @importFrom stats as.formula sd
+#'
 #' @export
 ezsummary <- function(tbl, n = F, sem = F, median = F, quantile = F, round.N = 3, flavor = "long", unit_markup = NULL){
   # Define the following variable to avoid NOTE on RMD check
