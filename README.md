@@ -43,6 +43,7 @@ The major functions in `ezsummary` include
 Both `ezsummary_categorical` and `ezsummar_quantitative` can be used independently. By default, `ezsummary_categorical` will give you the count and proportion of each category. If you want to know total counts, you will need to set the option `n = T`. If you want to display Percentage instead of proportion, you will need to disable proportion by `p = F` and enable Percentage by `P = T`. Similarly, `ezsummary_quantitative` works in the same way but it has more options, including standard error of the mean(SEM) `sem`, `median` and `quantile`. You can adjust the rounding by using `round.N`. Here are two examples using our beloved `mtcars`.
 
 ``` r
+library(dplyr)
 library(ezsummary)
 library(knitr)
 
@@ -199,6 +200,6 @@ kable(
 Issues
 ------
 
-If you ever find any issues, please feel free to report it in the issues tracking part on github. [<https://github.com/haozhu233/simple.summary/issues>](https://github.com/haozhu233/simple.summary/issues).
+If you ever find any issues, please feel free to report it in the issues tracking part on github. <https://github.com/haozhu233/simple.summary/issues>.
 
 Thanks for using this package!

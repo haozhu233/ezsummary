@@ -52,6 +52,7 @@ Both `ezsummary_categorical` and `ezsummar_quantitative` can be used independent
 Here are two examples using our beloved `mtcars`.
 
 ```{r, message=F}
+library(dplyr)
 library(ezsummary)
 library(knitr)
 

@@ -36,6 +36,7 @@ ezsummary <- function(tbl, n = F, sem = F, median = F, quantile = F, round.N = 3
   }
   if(flavor != "long" & flavor !="wide"){warning('The value of flavor has to be either "long" or "wide". Now the input is evalued as if you entered "long" by default. Please revise your function inputs!')}
   # Try to obtain grouping and variable information from the input tbl
+  # tbl <- as_data_frame(tbl)
   group.name <- attributes(tbl)$vars
   var.name <- attributes(tbl)$names
   if (!is.null(group.name)){
@@ -48,8 +49,8 @@ ezsummary <- function(tbl, n = F, sem = F, median = F, quantile = F, round.N = 3
   # auto assign var.types if not assigned
   tbl <- auto_var_types(tbl)
   # split dataset and do the analyses separately
-  tbl_q <- tbl[, attributes(tbl)$var_types == "q" | attributes(tbl)$var_types == "g"]
-  tbl_c <- tbl[, attributes(tbl)$var_types == "c" | attributes(tbl)$var_types == "g"]
+  tbl_q <- as_data_frame(tbl)[, attributes(tbl)$var_types == "q" | attributes(tbl)$var_types == "g"]
+  tbl_c <- as_data_frame(tbl)[, attributes(tbl)$var_types == "c" | attributes(tbl)$var_types == "g"]
   tbl_q_result <- NULL
   tbl_c_result <- NULL
   if (length(tbl_q) > n.group){
