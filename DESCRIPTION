@@ -2,8 +2,8 @@ Package: ezsummary
 Type: Package
 Title: Summarise Data in the Quick and Easy Way
 Version: 0.1.7
-Authors@R: person("Hao", "Zhu", email = "haozhu@hsl.harvard.com", role = c("aut", "cre"))
-Description: Functions that can simplie the most common descriptive analyses quests.
+Authors@R: person("Hao", "Zhu", email = "haozhu@hsl.harvard.edu", role = c("aut", "cre"))
+Description: Functions that can fulfill the gap between the outcomes of dplyr and a print-ready summary table.
 License: MIT + file LICENSE
 LazyData: TRUE
 Depends:
