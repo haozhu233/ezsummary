@@ -51,6 +51,10 @@ ezsummary <- function(tbl, n = F, sem = F, median = F, quantile = F, round.N = 3
   # split dataset and do the analyses separately
   tbl_q <- as_data_frame(tbl)[, attributes(tbl)$var_types == "q" | attributes(tbl)$var_types == "g"]
   tbl_c <- as_data_frame(tbl)[, attributes(tbl)$var_types == "c" | attributes(tbl)$var_types == "g"]
+  attributes(tbl_q)$class <- attributes(tbl)$class
+  attributes(tbl_c)$class <- attributes(tbl)$class
+  attributes(tbl_q)$vars <- attributes(tbl)$vars
+  attributes(tbl_c)$vars <- attributes(tbl)$vars
   tbl_q_result <- NULL
   tbl_c_result <- NULL
   if (length(tbl_q) > n.group){
