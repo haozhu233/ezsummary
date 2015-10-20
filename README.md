@@ -20,7 +20,11 @@ This package addresses this issue by pre-programming the common summary task in 
 To install
 ----------
 
-Type
+``` r
+    install.packages("ezsummary")
+```
+
+Or
 
 ``` r
     install.packages("devtools")

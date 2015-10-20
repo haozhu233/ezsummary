@@ -30,7 +30,12 @@ As investigators or data scientists, we are encountering these two kinds of data
 This package addresses this issue by pre-programming the common summary task in a way that "makes sense" and offers tools to help you format your table in a easier way. It is depends on `dplyr` and `reshape2`, so it's very fast. Also, this package uses `dplyr`'s piping syntax and the functions inside this package can interact with other `dplyr` functions pretty well. You will feel codes flow out of your fingertips after you get used to it. 
 
 ## To install
-Type  
+``` r
+    install.packages("ezsummary")
+```
+
+Or  
+
 ``` r
     install.packages("devtools")
     devtools::install_github("haozhu233/ezsummary")
