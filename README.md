@@ -2,11 +2,10 @@
 ezsummary
 =========
 
-[![Join the chat at https://gitter.im/haozhu233/ezsummary](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/haozhu233/ezsummary?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 Travis CI: [![Build Status](https://travis-ci.org/haozhu233/ezsummary.svg?branch=master)](https://travis-ci.org/haozhu233/ezsummary)
 CRAN: [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/ezsummary)](http://cran.r-project.org/package=ezsummary)
 Test Coverage: [![Coverage Status](https://coveralls.io/repos/haozhu233/ezsummary/badge.svg?branch=master&service=github)](https://coveralls.io/github/haozhu233/ezsummary?branch=master)
+[![Join the chat at <https://gitter.im/haozhu233/ezsummary>](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/haozhu233/ezsummary?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Introduction
 ------------
@@ -208,6 +207,6 @@ kable(
 Issues
 ------
 
-If you ever find any issues, please feel free to report it in the issues tracking part on github. <https://github.com/haozhu233/simple.summary/issues>.
+If you ever find any issues, please feel free to report it in the issues tracking part on github. [<https://github.com/haozhu233/simple.summary/issues>](https://github.com/haozhu233/simple.summary/issues).
 
 Thanks for using this package!
