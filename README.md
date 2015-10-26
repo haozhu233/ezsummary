@@ -2,6 +2,8 @@
 ezsummary
 =========
 
+[![Join the chat at https://gitter.im/haozhu233/ezsummary](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/haozhu233/ezsummary?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Travis CI: [![Build Status](https://travis-ci.org/haozhu233/ezsummary.svg?branch=master)](https://travis-ci.org/haozhu233/ezsummary)
 CRAN: [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/ezsummary)](http://cran.r-project.org/package=ezsummary)
 Test Coverage: [![Coverage Status](https://coveralls.io/repos/haozhu233/ezsummary/badge.svg?branch=master&service=github)](https://coveralls.io/github/haozhu233/ezsummary?branch=master)
