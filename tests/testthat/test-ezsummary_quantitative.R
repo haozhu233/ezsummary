@@ -5,6 +5,7 @@ df <- mtcars %>% select(mpg)
 df2 <- mtcars %>% group_by(am) %>% select(mpg)
 df3 <- mtcars %>% select(mpg, hp)
 df4 <- mtcars %>% group_by(am) %>% select(mpg, hp)
+df5 <- data.frame(x=c(-2,2,0,NA), y=c(1,1,1,1))
 
 test_that("ezsummary_quantitative can work correctly with 1 variable and no grouping data", {
   expected_data_frame_no_N <- data.frame(variable = "mpg", mean = 20.091, sd = 6.027)
@@ -49,4 +50,10 @@ test_that("ezsummary_quantitative can work with 2 variables with grouping info",
   expect_equivalent(attributes(ezsummary_quantitative(df4))$n.var, expected = 2)
   expect_equivalent(attributes(ezsummary_quantitative(df4, n = T))$n.group, expected = 1)
   expect_equivalent(attributes(ezsummary_quantitative(df4, n = T))$n.var, expected = 2)
+})
+
+test_that("ezsummary_quantitative can handle NAs when running with quantile=TRUE", {
+  expected_df <- data.frame(q0 = -2, q25 = -1, q50 = 0, q75 = 1, q100 = 2)
+  expect_equal(ezsummary(df5 %>% group_by(y),quantile = TRUE) %>% select(q0,q25,q50,q75,q100),
+                    expected_df)
 })

@@ -61,7 +61,7 @@ ezsummary_quantitative <- function(tbl, n = FALSE, mean = TRUE, sd = TRUE, sem =
   n.var <- length(var.name)
 
   # Set up the summarise_each formula based on the input.
-  options <- c("N = length(na.omit(.))", "mean = round(mean(na.omit(.)), round.N)", "sd = round(sd(na.omit(.)), round.N)", "sem = round(sd(na.omit(.)) / sqrt(length(na.omit(.))), round.N)", "median = median(na.omit(.))", "q0 = quantile(.,names = F)[1], q25 = quantile(.,names = F)[2], q50 = quantile(.,names = F)[3], q75 = quantile(.,names = F)[4], q100 = quantile(.,names = F)[5]")
+  options <- c("N = length(na.omit(.))", "mean = round(mean(na.omit(.)), round.N)", "sd = round(sd(na.omit(.)), round.N)", "sem = round(sd(na.omit(.)) / sqrt(length(na.omit(.))), round.N)", "median = median(na.omit(.))", "q0 = quantile(na.omit(.),names = F)[1], q25 = quantile(na.omit(.),names = F)[2], q50 = quantile(na.omit(.),names = F)[3], q75 = quantile(na.omit(.),names = F)[4], q100 = quantile(na.omit(.),names = F)[5]")
   option_names <- c("N", "mean", "sd", "sem", "median", "q0", "q25", "q50", "q75", "q100")
   option_switches <- c(n, mean, sd, sem, median, quantile)
   option_name_switches <- c(n, mean, sd, sem, median, quantile, quantile, quantile, quantile, quantile)
