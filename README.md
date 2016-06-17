@@ -8,6 +8,7 @@ Test Coverage: [![Coverage Status](https://coveralls.io/repos/haozhu233/ezsummar
 [![Join the chat at https://gitter.im/haozhu233/ezsummary](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/haozhu233/ezsummary?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 > Hadley will update tidyr on June 10th and that update will break this app. I will do an update to this app accordingly.
+> Update: I'm still working on updating this app and I'm adding some new features to it. It will be done before useR. 
 
 Introduction
 ------------
