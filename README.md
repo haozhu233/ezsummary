@@ -10,6 +10,8 @@ Test Coverage: [![Coverage Status](https://coveralls.io/repos/haozhu233/ezsummar
 > Hadley will update tidyr on June 10th and that update will break this app. I will do an update to this app accordingly.
 > Update: I'm still working on updating this app and I'm adding some new features to it. It will be done before useR. 
 
+> Update: I'm actively updating this package. Please don't use the github version for now. 
+
 Introduction
 ------------
 
