@@ -1,39 +1,46 @@
-#' Easy summary for categorical data
+#' Easily summarize categorical data
 #'
-#' @description This function provided an easy-to-use way to display simple
-#' statistical summary for categorical data. It can be used together with
-#' \code{\link[dplyr]{select}} and \code{\link[dplyr]{group_by}}. If the piece
-#' of data passed into the function has one/multiple group_by variables, the
-#' percentage and count will be calculated within the defined groups.
+#' @description \code{ezsummary_categorical()} summarizes categorical data.
 #'
-#' @param tbl The input matrix of data you would like to analyze.
-#' @param n n is a True/False switch that controls whether total counts(N)
-#' should be included in the output.
-#' @param count a T/F switch to control if counts should be included
-#' @param p a T/F switch to control if proportion should be included
-#' @param P a T/F switch to control if Percentage should be included. This will
-#' be a character output
-#' @param round.N Rounding number.
-#' @param flavor Flavor has two possible inputs: "long" and "wide". "Long" is
-#' the default setting which will put grouping information on the left side of
-#' the table. It is more machine readable and is good to be passed into the
-#' next analytical stage if needed. "Wide" is more print ready (except for
+#' @param tbl A vector, a data.frame or a \code{dplyr} \code{tbl}.
+#' @param n A T/F value; total counts of records. Default is
+#' \code{FALSE}.
+#' @param count A T/F value; count of records in each category.
+#' Default is \code{TRUE}.
+#' @param p A T/F value; proportion or percentage of records in each category.
+#' Default is \code{TRUE}.
+#' @param p_type A character string determining the output format of \code{p};
+#' possible values are \code{decimal} and \code{percent}. Default value is
+#' \code{decimal}.
+#' @param digits A numeric value determining the rounding digits; Replacement
+#' for \code{round.N}. Default setting is to read from \code{getOption()}.
+#' @param rounding_type A character string determining the rounding method;
+#' possible values are \code{round}, \code{signif}, \code{ceiling} and
+#' \code{floor}. When \code{ceiling} or \code{floor} is selected, \code{digits}
+#' won't have any effect.
+#' @param flavor A character string with two possible inputs: "long" and "wide".
+#' "Long" is the default setting which will put grouping information on the left
+#' side of the table. It is more machine readable and is good to be passed into
+#' the next analytical stage if needed. "Wide" is more print ready (except for
 #' column names, which you can fix in the next step, or fix in LaTex or
 #' packages like \code{htmlTable}). In the "wide" mode, the analyzed variable
 #' will be the only "ID" variable and all the stats values will be presented
 #' ogranized by the grouping variables (if any). If there is no grouping, the
 #' outputs of "wide" and "long" will be the same.
+#' @param fill If set, missing values created by the "wide" flavor will be
+#' replaced with this value. Please check \code{\link[tidyr]{spread}} for
+#' details. Default value is \code{0}
 #' @param unit_markup When unit_markup is not NULL, it will call the ezmarkup
 #' function and perform column combination here. To make everyone's life
 #' easier, I'm using the term "unit" here. Each unit mean each group of
 #' statistical summary results. If you want to know mean and stand deviation,
 #' these two values are your units so you can put something like "[. (.)]" there
-#'
-#' @return This function will organize all the results into one dataframe. If
-#' there are any group_by variables, the first few columns will be them. After
-#' these, the varible x will be the one listing all the categorical options in
-#' a format like "variable_option". The stats summaries are listed in the last
-#' few columns.
+#' #' @param P Deprecated; Will change the value of \code{p_type} if used in this
+#' version.
+#' @param P Deprecated; Will change the value of \code{p_type} if used in this
+#' version.
+#' @param round.N Deprecated; Will change the value of \code{rounding_type} if
+#' used in this version.
 #'
 #' @examples
 #' library(dplyr)
@@ -46,32 +53,31 @@
 #'   select(cyl, gear, carb) %>%
 #'   ezsummary_categorical(n=TRUE, round.N = 2)
 #'
+#' @importFrom dplyr as.tbl %>% group_by_ tally rename mutate_ bind_rows
+#' ungroup mutate arrange_ select
+#' @importFrom tidyr gather_ unite_ spread separate
 #' @export
 
 ezsummary_categorical <- function(
-  tbl, n = FALSE, missing = FALSE, count = TRUE, p = TRUE,
-  p_type = "decimal", digits = getOption("digits"),
+  tbl, n = FALSE, count = TRUE, p = TRUE, p_type = "decimal",
+  digits = getOption("digits"), rounding_type = "round",
   P = FALSE, round.N=3,
-  flavor = "long", unit_markup = NULL
+  flavor = "long", fill = 0, unit_markup = NULL
   ){
 
   # Option P and round.N have been deprecated. I'm still keeping the variables
   # here so people can still use them.
-  if(p == FALSE & P == TRUE){
-    warning("Option P and round.N have been deprecated. Please use p_type ",
-            "instead. See ?Help for documentation. ")
+  if(P == TRUE){
+    warning("Option P has been deprecated. Please use p_type instead.")
     p <- TRUE
     p_type <- "percent"
   }
 
   if(round.N != 3){
-    warning("Option P and round.N have been deprecated. Please use p_type ",
-            "instead. See ?Help for documentation. ")
+    warning("Option round.N has been deprecated. Please use 'digits' instead.")
     digits <- round.N
   }
 
-  # If the input tbl is a vector, convert it to a 1-D data.frame and set it as
-  # a 'tbl' (dplyr).
   if(is.vector(tbl)){
     tbl <- as.tbl(as.data.frame(tbl))
     attributes(tbl)$names <- "unknown"
@@ -104,53 +110,90 @@ ezsummary_categorical <- function(
   n_group <- length(group_name)
   n_var <- length(var_name)
 
-  # Set up the calculation formula based on the input.
-  options <- c("N = sum(n)", "missing = ", "count = n",
-               "p = round(n / sum(n), digits = digits)")
-  option_names <- c("N","count", "p", "P")
-  option_switches <- c(n, count, p)
-  option_name_switches <- c(n, count, p)
-  calculation_formula_generator <- function(var.name.1, group.name, options,
-                                            option_switches){
-    paste0("tbl %>% group_by(",
-           paste0(c(group.name, var.name.1), collapse = ", "),
-           ") %>% tally %>% rename(variable = ",
-           var.name.1,
-           ") %>% mutate(variable = paste('",
-           var.name.1,
-           "', variable, sep = '_'), ",
-           paste0(options[option_switches], collapse = ", "),
-           ") %>% select(-n)"
+  available_tasks <- c(
+    # count is calculated by default
+    n = "sum(count)",
+    count = "count",
+    p = `if`(
+      p_type == "decimal",
+      paste0(rounding_type, "(count/sum(count)",
+             `if`(rounding_type %in% c("round", "signif"),
+                  paste0(", ", digits, ")"), ")")),
+      p = paste0("paste0(", rounding_type, "(count/sum(count) * 100",
+                 `if`(rounding_type %in% c("round", "signif"),
+                      paste0(", ", digits, ")"), ")"), ", '%')")
     )
+  )
+  tasks_list <- available_tasks[c(n, count, p)]
+  tasks_names <- names(tasks_list)
+
+  tbl_summary <- lapply(
+    var_name,
+    function(x){
+      summary_tmp <- tbl %>%
+        group_by_(x, add = TRUE) %>%
+        tally() %>%
+        rename(count = n) %>%
+        group_by_(.dots = group_name) %>%
+        mutate_(.dots = tasks_list)
+      summary_tmp[n_group + 1][[1]] <- paste(
+        x, summary_tmp[n_group + 1][[1]], sep = "_")
+      names(summary_tmp)[n_group + 1] <- "var"
+      summary_tmp
+    }
+  ) %>%
+    bind_rows()
+
+  if(flavor == "wide" & n_group != 0){
+    tbl_summary <- tbl_summary %>%
+      gather_("analysis", "value", tasks_names)
+
+    tbl_summary[group_name] <- sapply(
+      group_name, function(x){paste(x, tbl_summary[x][[1]], sep = ".")}
+    )
+
+    tbl_summary <- tbl_summary %>%
+      unite_("analysis", c(group_name, "analysis"))
+
+    group_reorder <- sapply(group_name, function(x){
+      paste(x, attr(tbl, "labels")[x][[1]], sep = ".")
+    }) %>%
+      apply(1, paste, collapse = "_")
+    tasks_names <- c(sapply(group_reorder, function(x){
+      paste(x, tasks_names, sep = "_")
+    }))
+
+    tbl_summary <- tbl_summary %>%
+      spread(analysis, value, fill = fill) %>%
+      ungroup() %>%
+      separate(var, into = c("var_origin", "var_options"), remove = FALSE) %>%
+      mutate(var_origin = factor(var_origin, levels = var_name)) %>%
+      arrange_(c("var_origin", group_name)) %>%
+      select(-var_origin, -var_options)
   }
 
-  # Perform the calculation and rbind the results into table_export
-  table_export <- NULL
-  for (i in 1:n.var) {
-    table_export <- rbind(table_export,
-      eval(parse(text = calculation_formula_generator(var.name[i],group.name, options, option_switches))))
-  }
+  tbl_summary <- tbl_summary[c(
+    `if`(flavor == "long" & n_group != 0, group_name, NULL),
+    "var", tasks_names
+  )]
 
   # Ezmarkup
   if(!is.null(unit_markup)){
-    ezmarkup_formula <- paste0(paste0(rep(".", n.group), collapse = ""), ".", unit_markup)
-    table_export <- ezmarkup(table_export, ezmarkup_formula)
-  }
-
-  if(flavor == "wide"){
-    for(i in 1:n.group){
-      table_export[,group.name[i]] <- paste(group.name[i], unlist(table_export[,group.name[i]]), sep=".")
+    if(flavor == "wide" & n_group != 0){
+      ezmarkup_formula <- paste0(
+        ".", paste0(rep(unit_markup, nrow(attr(tbl, "labels"))), collapse = ""))
+    }else{
+      ezmarkup_formula <- paste0(paste0(rep(".", n_group), collapse = ""),
+                                 ".", unit_markup)
     }
-    table_export <- table_export %>% melt(id.var = c(group.name, "variable"), variable.name = "stats.var")
-    dcast_formula <- paste0("dcast(table_export, variable ~ ", paste0(c(group.name, "stats.var"), collapse = " + "), ")")
-    table_export <- eval(parse(text = dcast_formula))
+    tbl_summary <- ezmarkup(tbl_summary, ezmarkup_formula)
   }
 
-  attributes(table_export)$vars <- attributes(tbl)$vars
-  attributes(table_export)$n.group <- n.group
-  attributes(table_export)$n.var <- n.var
-  attr(table_export, "class") <- c("tbl_df", "tbl", "data.frame")
-  attr(table_export, "group_sizes") <- NULL
-  attr(table_export, "biggest_group_size") <- NULL
-  return(table_export)
+  return(tbl_summary)
 }
+
+#' Shorthand for ezsummary_categorical
+#' @rdname ezsummary_categorical
+#' @export
+
+ezsummary_c <- ezsummary_categorical

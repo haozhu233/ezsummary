@@ -1,55 +1,73 @@
-#' Simple Summary for Quantitative/binary variables
+#' Easily summarize quantitative data
+#' #'
+#' @description \code{ezsummary_quantitative()} summarizes quantitative data.
 #'
-#' @description Function ezsummary_quantitative provides simple summary (Mean
-#' and standard deviation with/without N) for quantitative data while function
-#' ezsummary_binary provides simple summary (freq and percentage with/without
-#' total counts) for binary data. These two function are simply wrappers
-#' outside of a summarise_each function. If we just want to know the most basic
-#' statistical summary, this function can save us some typing time. It also
-#' provide the option to include number of subjects inside the analyses.
-#'
-#' @param tbl The input matrix of data you would like to analyze.
-#' @param n n is a True/False switch that controls whether counts(N) should be
-#' included in the output
-#' @param mean a T/F switch to control whether mean should be calculated
-#' @param sd a T/F switch to control whether standard deviation should be
-#' calculated
-#' @param sem a T/F switch to control whether standard error of the mean should
-#' be calculated
-#' @param median a T/F switch to control whether median should be calculated
-#' @param quantile a T/F switch to control whether 0%, 25%, 50%, 75% and 100%
-#' quantile should be calculated
-#' @param round.N Rounding Number
-#' @param flavor Flavor has two possible inputs: "long" and "wide". "Long" is
-#' the default setting which will put grouping information on the left side of
-#' the table. It is more machine readable and is good to be passed into the
-#' next analytical stage if needed. "Wide" is more print ready (except for
+#' @param tbl A vector, a data.frame or a \code{dplyr} \code{tbl}.
+#' @param total a T/F value; total counts of records including both missing
+#' and read data records. Default is \code{FALSE}.
+#' @param n A T/F value; total counts of records that is not missing. Default
+#' is \code{FALSE}.
+#' @param missing a T/F value; total counts of records that went missing(
+#' \code{NA}). Default is \code{FALSE}.
+#' @param mean A T/F value; the average of a set of data. Default value is
+#' \code{TRUE}.
+#' @param sd A T/F value; the standard deviation of a set of data. Default value
+#' is \code{TRUE}.
+#' @param sem A T/F value; the standard error of the mean of a set of data.
+#' Default value is \code{FALSE}.
+#' @param median A T/F value; the median of a set of data. Default value is
+#' \code{FALSE}.
+#' @param quantile A T/F value controlling 5 outputs; the 0\%, 25\%, 50\%, 75\%
+#' and 100\% percentile of a set of data. Default value is \code{FALSE}.
+#' @param extra A character vector offering extra customizability to this
+#' function. Please see Details for detail.
+#' @param digits A numeric value determining the rounding digits; Replacement
+#' for \code{round.N}. Default setting is to read from \code{getOption()}.
+#' @param rounding_type A character string determining the rounding method;
+#' possible values are \code{round}, \code{signif}, \code{ceiling} and
+#' \code{floor}. When \code{ceiling} or \code{floor} is selected, \code{digits}
+#' won't have any effect.
+#' @param flavor A character string with two possible inputs: "long" and "wide".
+#' "Long" is the default setting which will put grouping information on the left
+#' side of the table. It is more machine readable and is good to be passed into
+#' the next analytical stage if needed. "Wide" is more print ready (except for
 #' column names, which you can fix in the next step, or fix in LaTex or
 #' packages like \code{htmlTable}). In the "wide" mode, the analyzed variable
 #' will be the only "ID" variable and all the stats values will be presented
 #' ogranized by the grouping variables (if any). If there is no grouping, the
 #' outputs of "wide" and "long" will be the same.
+#' @param fill If set, missing values created by the "wide" flavor will be
+#' replaced with this value. Please check \code{\link[tidyr]{spread}} for
+#' details. Default value is \code{0}
 #' @param unit_markup When unit_markup is not NULL, it will call the ezmarkup
 #' function and perform column combination here. To make everyone's life
 #' easier, I'm using the term "unit" here. Each unit mean each group of
 #' statistical summary results. If you want to know mean and stand deviation,
 #' these two values are your units so you can put something like "[. (.)]" there
-#'
-#' @return It will return in the same format as a summarise_each function does
+#' #' @param P Deprecated; Will change the value of \code{p_type} if used in this
+#' version.
+#' @param round.N Deprecated; Will change the value of \code{rounding_type} if
+#' used in this version.
 #'
 #' @examples
 #' library(dplyr)
-#' mtcars %>% group_by(am) %>% select(mpg, wt, qsec) %>% ezsummary_quantitative()
+#' mtcars %>%
+#'   group_by(am) %>%
+#'   select(mpg, wt, qsec) %>%
+#'   ezsummary_quantitative()
 #'
+#' @importFrom dplyr as.tbl %>% summarise_each funs_ mutate ungroup arrange_
+#' @importFrom tidyr gather unite_ spread separate
 #' @importFrom stats na.omit sd median quantile
 #' @export
+
 ezsummary_quantitative <- function(
   tbl, total = FALSE, n = FALSE, missing = FALSE,
   mean = TRUE, sd = TRUE, sem = FALSE, median = FALSE, quantile = FALSE,
   extra = NULL,
   digits = getOption("digits"), rounding_type = "round",
-  P = FALSE, round.N=3,
-  flavor = "long", unit_markup = NULL
+  round.N=3,
+  flavor = "long", fill = 0, unit_markup = NULL
 ){
 
   if(round.N != 3){
@@ -72,7 +90,6 @@ ezsummary_quantitative <- function(
       'is used here. ')
   }
 
-  # Try to obtain grouping and variable information from the input tbl
   group_name <- attributes(tbl)$vars
   var_name <- attributes(tbl)$names
   if (!is.null(group_name)){
@@ -147,7 +164,7 @@ ezsummary_quantitative <- function(
   }
 
   tbl_summary <- tbl_summary %>%
-    spread(analysis, value) %>%
+    spread(analysis, value, fill = fill) %>%
     ungroup() %>%
     mutate(var = factor(var, levels = setdiff(var_name, group_name))) %>%
     arrange_(c("var", group_name))
@@ -157,20 +174,21 @@ ezsummary_quantitative <- function(
     "var", tasks_names
     )]
 
-  return(tbl_summary)
+  # Ezmarkup
+  if(!is.null(unit_markup)){
+    if(flavor == "wide" & n_group != 0){
+      ezmarkup_formula <- paste0(
+        ".", paste0(rep(unit_markup, nrow(attr(tbl, "labels"))), collapse = ""))
+    }else{
+      ezmarkup_formula <- paste0(paste0(rep(".", n_group), collapse = ""),
+                                 ".", unit_markup)
+    }
+    tbl_summary <- ezmarkup(tbl_summary, ezmarkup_formula)
+  }
 
-  # # Ezmarkup
-  # if(!is.null(unit_markup)){
-  #   ezmarkup_formula <- paste0(paste0(rep(".", n.group), collapse = ""), ".", unit_markup)
-  #   table_export <- ezmarkup(table_export, ezmarkup_formula)
-  # }
-  #
-  # attributes(table_export)$vars <- group.name
-  # attributes(table_export)$n.group <- n.group
-  # attributes(table_export)$n.var <- n.var
-  # attr(table_export, "class") <- c("tbl_df", "tbl", "data.frame")
-  # attr(table_export, "group_sizes") <- NULL
-  # attr(table_export, "biggest_group_size") <- NULL
-  # return(table_export)
+  return(tbl_summary)
 }
 
+#' @rdname ezsummary_quantitative
+#' @export
+ezsummary_q <- ezsummary_quantitative

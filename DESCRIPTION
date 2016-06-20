@@ -8,14 +8,15 @@ Authors@R: c(
     person("Timothy", "Tsai", email = "TimothyTsai@hsl.harvard.edu", role = c("ctb")),
     person("Akhmed", "Umyarov", email = "aumyarov@umn.edu", role = c("ctb"))
     )
-Description: Functions that can fulfill the gap between the outcomes of 'dplyr' and a print-ready summary table.
+Description: Functions that can fulfill the gap between the outcomes of 'dplyr'
+    and a print-ready summary table.
 License: MIT + file LICENSE
 LazyData: TRUE
 Depends:
-  R (>= 3.1.2)
+    R (>= 3.1.2)
 Imports:
-  dplyr (>= 0.4),
-  tidyr (>= 0.4)
+    dplyr (>= 0.4),
+    tidyr (>= 0.4)
 Suggests:
- testthat
-
+    testthat
+RoxygenNote: 5.0.1

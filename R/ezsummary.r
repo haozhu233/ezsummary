@@ -22,7 +22,6 @@
 #' like "[. (.)]" there
 #'
 #' @import dplyr
-#' @importFrom reshape2 melt dcast
 #' @importFrom tidyr separate
 #' @importFrom stats as.formula sd
 #'
