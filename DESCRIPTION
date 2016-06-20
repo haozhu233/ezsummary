@@ -1,7 +1,7 @@
 Package: ezsummary
 Type: Package
 Title: Summarise Data in the Quick and Easy Way
-Version: 0.1.11
+Version: 0.2.0.9000
 Authors@R: c(
     person("Hao", "Zhu", email = "haozhu@hsl.harvard.edu", role = c("aut", "cre")),
     person("Thomas", "Travison", email = "TGT@hsl.harvard.edu", role = c("ctb")),
@@ -15,8 +15,7 @@ Depends:
   R (>= 3.1.2)
 Imports:
   dplyr (>= 0.4),
-  reshape2 (>= 1.4.1),
-  tidyr (>= 0.3)
+  tidyr (>= 0.4)
 Suggests:
  testthat
 

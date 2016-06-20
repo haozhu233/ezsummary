@@ -148,3 +148,16 @@ kable(
 If you ever find any issues, please feel free to report it in the issues tracking part on github. [https://github.com/haozhu233/simple.summary/issues](https://github.com/haozhu233/simple.summary/issues). 
 
 Thanks for using this package!
+
+A comparison with the code you need to write using `dplyr` and `tidyr`
+```{r}
+mtcars %>%
+  group_by(cyl) %>%
+  select(mpg, disp, hp, wt) %>% 
+  summarize_each(funs(mean, sd)) %>% 
+  gather(var, value, -cyl) %>% 
+  separate(var, into = c("var", "analysis")) %>% 
+  spread(analysis, value) %>% 
+  mutate(var = factor(var, levels = c("mpg", "disp", "hp", "wt"))) %>% 
+  arrange(var, cyl)
+```
