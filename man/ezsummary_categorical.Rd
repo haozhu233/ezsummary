@@ -6,13 +6,14 @@
 \title{Easily summarize categorical data}
 \usage{
 ezsummary_categorical(tbl, n = FALSE, count = TRUE, p = TRUE,
-  p_type = "decimal", digits = getOption("digits"),
-  rounding_type = "round", P = FALSE, round.N = 3, flavor = "long",
-  fill = 0, unit_markup = NULL)
+  p_type = c("decimal", "percentage"), digits = 3,
+  rounding_type = c("round", "signif", "ceiling", "floor"), P = FALSE,
+  round.N = 3, flavor = c("long", "wide"), fill = 0, unit_markup = NULL)
 
-ezsummary_c(tbl, n = FALSE, count = TRUE, p = TRUE, p_type = "decimal",
-  digits = getOption("digits"), rounding_type = "round", P = FALSE,
-  round.N = 3, flavor = "long", fill = 0, unit_markup = NULL)
+ezsummary_c(tbl, n = FALSE, count = TRUE, p = TRUE,
+  p_type = c("decimal", "percentage"), digits = 3,
+  rounding_type = c("round", "signif", "ceiling", "floor"), P = FALSE,
+  round.N = 3, flavor = c("long", "wide"), fill = 0, unit_markup = NULL)
 }
 \arguments{
 \item{tbl}{A vector, a data.frame or a \code{dplyr} \code{tbl}.}

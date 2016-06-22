@@ -8,15 +8,15 @@
 \usage{
 ezsummary_quantitative(tbl, total = FALSE, n = FALSE, missing = FALSE,
   mean = TRUE, sd = TRUE, sem = FALSE, median = FALSE,
-  quantile = FALSE, extra = NULL, digits = getOption("digits"),
-  rounding_type = c("round", "signif", "ceiling", "floor"), round.N = 3,
-  flavor = c("long", "wide"), fill = 0, unit_markup = NULL)
+  quantile = FALSE, extra = NULL, digits = 3, rounding_type = c("round",
+  "signif", "ceiling", "floor"), round.N = 3, flavor = c("long", "wide"),
+  fill = 0, unit_markup = NULL)
 
 ezsummary_q(tbl, total = FALSE, n = FALSE, missing = FALSE, mean = TRUE,
   sd = TRUE, sem = FALSE, median = FALSE, quantile = FALSE,
-  extra = NULL, digits = getOption("digits"), rounding_type = c("round",
-  "signif", "ceiling", "floor"), round.N = 3, flavor = c("long", "wide"),
-  fill = 0, unit_markup = NULL)
+  extra = NULL, digits = 3, rounding_type = c("round", "signif",
+  "ceiling", "floor"), round.N = 3, flavor = c("long", "wide"), fill = 0,
+  unit_markup = NULL)
 }
 \arguments{
 \item{tbl}{A vector, a data.frame or a \code{dplyr} \code{tbl}.}

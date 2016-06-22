@@ -57,38 +57,36 @@ The major functions in `ezsummary` include
   + `var_types`
 * __`ezmarkup`__
 
-Both `ezsummary_categorical` and `ezsummar_quantitative` can be used independently. By default, `ezsummary_categorical` will give you the count and proportion of each category. If you want to know total counts, you will need to set the option `n = T`. If you want to display Percentage instead of proportion, you will need to disable proportion by `p = F` and enable Percentage by `P = T`. Similarly, `ezsummary_quantitative` works in the same way but it has more options, including standard error of the mean(SEM) `sem`, `median` and `quantile`. You can adjust the rounding by using `round.N`.
+Both `ezsummary_categorical` (shorthand `ezsummary_c()`) and `ezsummar_quantitative` (shorthand `ezsummary_q()`) can be used independently. By default, `ezsummary_categorical` will give you the count and proportion of each category. If you want to know total counts, you will need to set the option `n = T`. If you want to display Percentage instead of proportion, you will need to disable proportion by `p = F` and enable Percentage by `P = T`. Similarly, `ezsummary_quantitative` works in the same way but it has more options, including standard error of the mean(SEM) `sem`, `median` and `quantile`. You can adjust the rounding by using `round.N`.
 Here are two examples using our beloved `mtcars`.
 
 ```{r, message=F}
 library(dplyr)
+library(tidyr)
 library(ezsummary)
 library(knitr)
 
-kable(
-  mtcars %>%
+mtcars %>%
   select(am, cyl) %>%
-  ezsummary_categorical(n=T)
-  )
+  ezsummary_c(n=T) %>%
+  kable()
 
-kable(
-  mtcars %>%
+mtcars %>%
   group_by(am) %>%
   select(mpg, wt, hp) %>%
-  ezsummary_quantitative(sd = F, sem = T, round.N = 1)
-  )
+  ezsummary_q(sd = F, sem = T, digits = 1) %>%
+  kable()
 ```
 
 ### Advanced
 If you are doing analyses by group, like the example above, by the default setting of `ezsummary`, you will get a "tidy" formated table of results, in which the grouping information are listed as column(s) on the left. This format allows you to keep process your results. If you want the grouping information to be organized into row.names and makes the table wider, which is more "publish ready", you should use the `flavor` option. There are two options available, "long" and "wide".
 
 ```{r}
-kable(
-  mtcars %>%
+mtcars %>%
   group_by(am) %>%
   select(mpg, wt, hp) %>%
-  ezsummary_quantitative(sd = F, sem = T, round.N = 1, flavor = "wide")
-  )
+  ezsummary_q(sd = F, sem = T, digits = 1, flavor = "wide") %>%
+  kable()
 ```
 
 (You may have notived that I'm using dot to separate grouping variable name and option and using underscore to separate grouping info and stats names. As as result, it will be a little easier for people who are not that familar with `regex` to cut the names and reshape the results.)
@@ -96,58 +94,39 @@ kable(
 Now you feel like it is not that easy to read mean and sem on the same row. Well, we have `ezmarkup`. In this function, we use a dot `.` to represent a column and use a pair of bracket `[]` to represent you want to __"squeeze"__ the columns inside into one. Any other symbols and characters within a pair of bracket will be copied into the same cell as well. It allows us to do advanced formatting settings in a very convenient way. Also, if you use the `unit_markup` option within the `ezsummary` functions, it will give you the same results. In that case, instead of typing in the markup pattern for every column, you just need to type the pattern for each pair of analysis you want to do. Here are two examples. 
 
 ```{r}
-kable(
-  mtcars %>%
+mtcars %>%
   group_by(am) %>%
   select(mpg, wt, hp) %>%
-  ezsummary_quantitative(sd = F, sem = T, round.N = 1, flavor = "wide") %>%
-  ezmarkup(".[. (.)][. (.)]")
-  )
+  ezsummary_quantitative(sd = F, sem = T, digits = 1, 
+                         flavor = "wide") %>%
+  ezmarkup(".[. (.)][. (.)]") %>%
+  kable()
 
-# The following code will have the almost the same results: -------------
-#
-# kable(
-#   mtcars %>%
-#   group_by(am) %>%
-#   select(mpg, wt, hp) %>%
-#   ezsummary_quantitative(sd = F, sem = T, round.N = 1, flavor = "wide", unit_markup = "[. (.)]")
-#   )
-
-kable(
-  mtcars %>%
+mtcars %>%
   group_by(am) %>%
   select(mpg, wt, hp) %>%
-  ezsummary_quantitative(sd = F, sem = T, round.N = 1, flavor = "wide") %>%
-  ezmarkup(".[. <sub>.</sub>][. <sub>.</sub>]"),
-  
-  escape = F
-  )
+  ezsummary_quantitative(
+    sd = F, sem = T, round.N = 1, 
+    flavor = "wide", unit_markup = "[. <sub>.</sub>]") %>%
+  kable(escape = F)
 ```
 
 ### Easy Summary
 Finally, here comes our `ezsummary` function. By default, `ezsummary` acts just like a regular `ezsummary_quantitative` function, except when a column is not numeric, it will treat that colum as a categorical variable. As a result, `ezsummary` is supposed to be workable in any cases and can successfully reduce the chance of getting embarrassed by applying `mean` on a column of names. To make it better, you can pass a string of data types to `ezsummary` by using the `var_types` function. Again, read after me, "q" stands for a qualitative and continuous variable while "c" stands for a categorical and qualitative variable. Another thing you should pay attention is that the grouping variable should also take a slot. You are recommended to assign it as a categorical variable. Here are two examples. 
 
 ```{r}
-kable(
-  mtcars %>% as_data_frame() %>% 
-    mutate(am = as.character(am)) %>% 
-    ezsummary(unit_markup = "[. (.)]")
-)
+mtcars %>% 
+  mutate(am = as.character(am)) %>% 
+  ezsummary(unit_markup = "[. (.)]") %>%
+  kable()
 
-kable(
-  mtcars %>% 
-    group_by(am) %>%
-    select(mpg, cyl, disp, hp, vs) %>%
-    var_types("cqcqqc") %>%
-    ezsummary(unit_markup = "[. (.)]", flavor="wide", round.N = 2)
-)
+mtcars %>% 
+  group_by(am) %>%
+  select(mpg, cyl, disp, hp, vs) %>%
+  var_types("cqcqqc") %>%
+  ezsummary(unit_markup = "[. (.)]", flavor="wide", digits = 2) %>%
+  kable()
 ```
-
-
-## Issues
-If you ever find any issues, please feel free to report it in the issues tracking part on github. [https://github.com/haozhu233/simple.summary/issues](https://github.com/haozhu233/simple.summary/issues). 
-
-Thanks for using this package!
 
 A comparison with the code you need to write using `dplyr` and `tidyr`
 ```{r}
@@ -161,3 +140,8 @@ mtcars %>%
   mutate(var = factor(var, levels = c("mpg", "disp", "hp", "wt"))) %>% 
   arrange(var, cyl)
 ```
+
+## Issues
+If you ever find any issues, please feel free to report it in the issues tracking part on github. [https://github.com/haozhu233/simple.summary/issues](https://github.com/haozhu233/simple.summary/issues). 
+
+Thanks for using this package!

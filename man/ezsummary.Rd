@@ -4,13 +4,20 @@
 \alias{ezsummary}
 \title{Quick and Easy summarise function}
 \usage{
-ezsummary(tbl, ...)
+ezsummary(tbl, ..., mode = c("ez", "details"))
 }
 \arguments{
 \item{tbl}{A vector, a data.frame or a \code{dplyr} \code{tbl}.}
 
 \item{...}{Arguments that can be passed to \code{ezsummary_q()} and
 \code{ezsummary_c()}}
+
+\item{mode}{A character value that can be either \code{"ez"} or
+\code{"details"}. \code{"ez"} is the default mode that will try to fits
+quantitative and categorical results into one table. If these two have
+different number of analyses or if set manually, mode \code{"details"} is
+enabled. In this mode, quantitative and categorical variables are displayed
+separately and the result is stored in a list}
 }
 \description{
 Quick and Easy summarise function

@@ -53,17 +53,18 @@
 #'   select(cyl, gear, carb) %>%
 #'   ezsummary_categorical(n=TRUE, round.N = 2)
 #'
-#' @importFrom dplyr as.tbl %>% group_by_ tally rename mutate_ bind_rows
-#' ungroup mutate arrange_ select
-#' @importFrom tidyr gather_ unite_ spread separate
 #' @export
 
 ezsummary_categorical <- function(
-  tbl, n = FALSE, count = TRUE, p = TRUE, p_type = "decimal",
-  digits = getOption("digits"), rounding_type = "round",
-  P = FALSE, round.N=3,
-  flavor = "long", fill = 0, unit_markup = NULL
+  tbl, n = FALSE, count = TRUE, p = TRUE, p_type = c("decimal", "percentage"),
+  digits = 3,
+  rounding_type = c("round", "signif", "ceiling", "floor"),
+  P = FALSE, round.N = 3,
+  flavor = c("long", "wide"), fill = 0, unit_markup = NULL
   ){
+
+  # Define the following variable to avoid NOTE on RMD check
+  variable = value = analysis = var_origin = var_options = NULL
 
   # Option P and round.N have been deprecated. I'm still keeping the variables
   # here so people can still use them.
@@ -86,19 +87,9 @@ ezsummary_categorical <- function(
             'pass the value in as a data frame using `select` from dplyr.')
   }
 
-  if(!flavor %in% c("long", "wide")){
-    flavor <- "long"
-    warning(
-      '`flavor` has to be either "long" or "wide". The default value "long" ',
-      'is used here. ')
-  }
-
-  if(!p_type %in% c("decimal", "percent")){
-    p_type <- "decimal"
-    warning(
-      '`p_type` has to be either "decimal" or "percent". ',
-      'The default value "decimal" is used here. ')
-  }
+  p_type <- match.arg(p_type)
+  rounding_type <- match.arg(rounding_type)
+  flavor <- match.arg(flavor)
 
   # Try to obtain grouping and variable information from the input tbl
   group_name <- attributes(tbl)$vars
@@ -109,6 +100,8 @@ ezsummary_categorical <- function(
   }
   n_group <- length(group_name)
   n_var <- length(var_name)
+
+  if(n_group == 0 & flavor == "wide"){flavor <- "long"}
 
   available_tasks <- c(
     # count is calculated by default
@@ -138,13 +131,16 @@ ezsummary_categorical <- function(
         mutate_(.dots = tasks_list)
       summary_tmp[n_group + 1][[1]] <- paste(
         x, summary_tmp[n_group + 1][[1]], sep = "_")
-      names(summary_tmp)[n_group + 1] <- "var"
+      names(summary_tmp)[n_group + 1] <- "variable"
       summary_tmp
     }
-  ) %>%
-    bind_rows()
+  )
 
-  if(flavor == "wide" & n_group != 0){
+  category_sizes <- unlist(lapply(tbl_summary, nrow))
+
+  tbl_summary <- tbl_summary %>% bind_rows()
+
+  if(flavor == "wide"){
     tbl_summary <- tbl_summary %>%
       gather_("analysis", "value", tasks_names)
 
@@ -166,15 +162,22 @@ ezsummary_categorical <- function(
     tbl_summary <- tbl_summary %>%
       spread(analysis, value, fill = fill) %>%
       ungroup() %>%
-      separate(var, into = c("var_origin", "var_options"), remove = FALSE) %>%
+      separate(variable, into = c("var_origin", "var_options"), remove = FALSE) %>%
       mutate(var_origin = factor(var_origin, levels = var_name)) %>%
       arrange_(c("var_origin", group_name)) %>%
       select(-var_origin, -var_options)
+
+    category_sizes <- sapply(
+      var_name,
+      function(x){
+        nrow(unique(ungroup(tbl)[x]))
+      }
+    )
   }
 
   tbl_summary <- tbl_summary[c(
     `if`(flavor == "long" & n_group != 0, group_name, NULL),
-    "var", tasks_names
+    "variable", tasks_names
   )]
 
   # Ezmarkup
@@ -189,6 +192,8 @@ ezsummary_categorical <- function(
     tbl_summary <- ezmarkup(tbl_summary, ezmarkup_formula)
   }
 
+  attr(tbl_summary, "categories") <- rep(var_name, category_sizes)
+  attr(tbl_summary, "flavor") <- flavor
   return(tbl_summary)
 }
 

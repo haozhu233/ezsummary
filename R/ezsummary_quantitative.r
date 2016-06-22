@@ -1,5 +1,5 @@
 #' Easily summarize quantitative data
-#' #'
+#'
 #' @description \code{ezsummary_quantitative()} summarizes quantitative data.
 #'
 #' @param tbl A vector, a data.frame or a \code{dplyr} \code{tbl}.
@@ -56,8 +56,6 @@
 #'   select(mpg, wt, qsec) %>%
 #'   ezsummary_quantitative()
 #'
-#' @importFrom dplyr as.tbl %>% summarise_each funs_ mutate ungroup arrange_
-#' @importFrom tidyr gather unite_ spread separate
 #' @importFrom stats na.omit sd median quantile
 #' @export
 
@@ -65,11 +63,14 @@ ezsummary_quantitative <- function(
   tbl, total = FALSE, n = FALSE, missing = FALSE,
   mean = TRUE, sd = TRUE, sem = FALSE, median = FALSE, quantile = FALSE,
   extra = NULL,
-  digits = getOption("digits"),
+  digits = 3,
   rounding_type = c("round", "signif", "ceiling", "floor"),
   round.N=3,
   flavor = c("long", "wide"), fill = 0, unit_markup = NULL
 ){
+
+  # Define the following variable to avoid NOTE on RMD check
+  variable = value = analysis = NULL
 
   if(round.N != 3){
     warning("Option round.N has been deprecated. Please use 'digits' instead.")
@@ -95,6 +96,8 @@ ezsummary_quantitative <- function(
   }
   n_group <- length(group_name)
   n_var <- length(var_name)
+
+  if(n_group == 0 & flavor == "wide"){flavor <- "long"}
 
   # Generate a list of tasks needed to be done
   available_tasks <- c(
@@ -127,10 +130,10 @@ ezsummary_quantitative <- function(
 
   if(n_group == 0){
     tbl_summary <- tbl_summary_raw %>%
-      gather(var, value)
+      gather(variable, value)
   }else{
     tbl_summary <- tbl_summary_raw %>%
-      gather(var, value, seq(-1, -n_group))
+      gather(variable, value, seq(-1, -n_group))
   }
 
   tbl_summary <- tbl_summary %>%
@@ -143,11 +146,16 @@ ezsummary_quantitative <- function(
   if(length(tasks_list) == 1){
     tbl_summary["analysis"] <- tasks_names
   }else{
-    tbl_summary <- tbl_summary %>%
-      separate(var, into = c("var", "analysis"))
+    if(n_var == 1){
+      names(tbl_summary)[names(tbl_summary) == "variable"] <- "analysis"
+      tbl_summary["variable"] <- var_name
+    }else{
+      tbl_summary <- tbl_summary %>%
+        separate(variable, into = c("variable", "analysis"))
+    }
   }
 
-  if(flavor == "wide" & n_group != 0){
+  if(flavor == "wide"){
     tbl_summary[group_name] <- sapply(
       group_name, function(x){paste(x, tbl_summary[x][[1]], sep = ".")}
     )
@@ -167,12 +175,12 @@ ezsummary_quantitative <- function(
   tbl_summary <- tbl_summary %>%
     spread(analysis, value, fill = fill) %>%
     ungroup() %>%
-    mutate(var = factor(var, levels = setdiff(var_name, group_name))) %>%
-    arrange_(c("var", group_name))
+    mutate(variable = factor(variable, levels = setdiff(var_name, group_name))) %>%
+    arrange_(c("variable", group_name))
 
   tbl_summary <- tbl_summary[c(
     `if`(flavor == "long" & n_group != 0, group_name, NULL),
-    "var", tasks_names
+    "variable", tasks_names
     )]
 
   # Ezmarkup
@@ -186,6 +194,8 @@ ezsummary_quantitative <- function(
     }
     tbl_summary <- ezmarkup(tbl_summary, ezmarkup_formula)
   }
+
+  attr(tbl_summary, "flavor") <- flavor
 
   return(tbl_summary)
 }

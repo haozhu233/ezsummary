@@ -8,9 +8,6 @@ Test Coverage: [![Coverage Status](https://coveralls.io/repos/haozhu233/ezsummar
 [![Join the chat at https://gitter.im/haozhu233/ezsummary](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/haozhu233/ezsummary?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 > Hadley will update tidyr on June 10th and that update will break this app. I will do an update to this app accordingly.
-> Update: I'm still working on updating this app and I'm adding some new features to it. It will be done before useR. 
-
-> Update: I'm actively updating this package. Please don't use the github version for now. 
 
 Introduction
 ------------
@@ -52,21 +49,21 @@ The major functions in `ezsummary` include
 -   `var_types`
 -   **`ezmarkup`**
 
-Both `ezsummary_categorical` and `ezsummar_quantitative` can be used independently. By default, `ezsummary_categorical` will give you the count and proportion of each category. If you want to know total counts, you will need to set the option `n = T`. If you want to display Percentage instead of proportion, you will need to disable proportion by `p = F` and enable Percentage by `P = T`. Similarly, `ezsummary_quantitative` works in the same way but it has more options, including standard error of the mean(SEM) `sem`, `median` and `quantile`. You can adjust the rounding by using `round.N`. Here are two examples using our beloved `mtcars`.
+Both `ezsummary_categorical` (shorthand `ezsummary_c()`) and `ezsummar_quantitative` (shorthand `ezsummary_q()`) can be used independently. By default, `ezsummary_categorical` will give you the count and proportion of each category. If you want to know total counts, you will need to set the option `n = T`. If you want to display Percentage instead of proportion, you will need to disable proportion by `p = F` and enable Percentage by `P = T`. Similarly, `ezsummary_quantitative` works in the same way but it has more options, including standard error of the mean(SEM) `sem`, `median` and `quantile`. You can adjust the rounding by using `round.N`. Here are two examples using our beloved `mtcars`.
 
 ``` r
 library(dplyr)
+library(tidyr)
 library(ezsummary)
 library(knitr)
 
-kable(
-  mtcars %>%
+mtcars %>%
   select(am, cyl) %>%
-  ezsummary_categorical(n=T)
-  )
+  ezsummary_c(n=T) %>%
+  kable()
 ```
 
-| variable |    N|  count|      p|
+| variable |    n|  count|      p|
 |:---------|----:|------:|------:|
 | am\_0    |   32|     19|  0.594|
 | am\_1    |   32|     13|  0.406|
@@ -76,12 +73,11 @@ kable(
 
 ``` r
 
-kable(
-  mtcars %>%
+mtcars %>%
   group_by(am) %>%
   select(mpg, wt, hp) %>%
-  ezsummary_quantitative(sd = F, sem = T, round.N = 1)
-  )
+  ezsummary_q(sd = F, sem = T, digits = 1) %>%
+  kable()
 ```
 
 |   am| variable |   mean|   sem|
@@ -98,12 +94,11 @@ kable(
 If you are doing analyses by group, like the example above, by the default setting of `ezsummary`, you will get a "tidy" formated table of results, in which the grouping information are listed as column(s) on the left. This format allows you to keep process your results. If you want the grouping information to be organized into row.names and makes the table wider, which is more "publish ready", you should use the `flavor` option. There are two options available, "long" and "wide".
 
 ``` r
-kable(
-  mtcars %>%
+mtcars %>%
   group_by(am) %>%
   select(mpg, wt, hp) %>%
-  ezsummary_quantitative(sd = F, sem = T, round.N = 1, flavor = "wide")
-  )
+  ezsummary_q(sd = F, sem = T, digits = 1, flavor = "wide") %>%
+  kable()
 ```
 
 | variable |  am.0\_mean|  am.0\_sem|  am.1\_mean|  am.1\_sem|
@@ -117,13 +112,13 @@ kable(
 Now you feel like it is not that easy to read mean and sem on the same row. Well, we have `ezmarkup`. In this function, we use a dot `.` to represent a column and use a pair of bracket `[]` to represent you want to **"squeeze"** the columns inside into one. Any other symbols and characters within a pair of bracket will be copied into the same cell as well. It allows us to do advanced formatting settings in a very convenient way. Also, if you use the `unit_markup` option within the `ezsummary` functions, it will give you the same results. In that case, instead of typing in the markup pattern for every column, you just need to type the pattern for each pair of analysis you want to do. Here are two examples.
 
 ``` r
-kable(
-  mtcars %>%
+mtcars %>%
   group_by(am) %>%
   select(mpg, wt, hp) %>%
-  ezsummary_quantitative(sd = F, sem = T, round.N = 1, flavor = "wide") %>%
-  ezmarkup(".[. (.)][. (.)]")
-  )
+  ezsummary_quantitative(sd = F, sem = T, digits = 1, 
+                         flavor = "wide") %>%
+  ezmarkup(".[. (.)][. (.)]") %>%
+  kable()
 ```
 
 | variable | am.0\_mean (am.0\_sem) | am.1\_mean (am.1\_sem) |
@@ -134,24 +129,15 @@ kable(
 
 ``` r
 
-# The following code will have the almost the same results: -------------
-#
-# kable(
-#   mtcars %>%
-#   group_by(am) %>%
-#   select(mpg, wt, hp) %>%
-#   ezsummary_quantitative(sd = F, sem = T, round.N = 1, flavor = "wide", unit_markup = "[. (.)]")
-#   )
-
-kable(
-  mtcars %>%
+mtcars %>%
   group_by(am) %>%
   select(mpg, wt, hp) %>%
-  ezsummary_quantitative(sd = F, sem = T, round.N = 1, flavor = "wide") %>%
-  ezmarkup(".[. <sub>.</sub>][. <sub>.</sub>]"),
-  
-  escape = F
-  )
+  ezsummary_quantitative(
+    sd = F, sem = T, round.N = 1, 
+    flavor = "wide", unit_markup = "[. <sub>.</sub>]") %>%
+  kable(escape = F)
+#> Warning in ezsummary_quantitative(., sd = F, sem = T, round.N = 1, flavor =
+#> "wide", : Option round.N has been deprecated. Please use 'digits' instead.
 ```
 
 | variable | am.0\_mean <sub>am.0\_sem</sub> | am.1\_mean <sub>am.1\_sem</sub> |
@@ -165,49 +151,77 @@ kable(
 Finally, here comes our `ezsummary` function. By default, `ezsummary` acts just like a regular `ezsummary_quantitative` function, except when a column is not numeric, it will treat that colum as a categorical variable. As a result, `ezsummary` is supposed to be workable in any cases and can successfully reduce the chance of getting embarrassed by applying `mean` on a column of names. To make it better, you can pass a string of data types to `ezsummary` by using the `var_types` function. Again, read after me, "q" stands for a qualitative and continuous variable while "c" stands for a categorical and qualitative variable. Another thing you should pay attention is that the grouping variable should also take a slot. You are recommended to assign it as a categorical variable. Here are two examples.
 
 ``` r
-kable(
-  mtcars %>% as_data_frame() %>% 
-    mutate(am = as.character(am)) %>% 
-    ezsummary(unit_markup = "[. (.)]")
-)
+mtcars %>% 
+  mutate(am = as.character(am)) %>% 
+  ezsummary(unit_markup = "[. (.)]") %>%
+  kable()
 ```
 
-| variable | mean\_n (sd\_p)   |
-|:---------|:------------------|
-| mpg      | 20.091 (6.027)    |
-| cyl      | 6.188 (1.786)     |
-| disp     | 230.722 (123.939) |
-| hp       | 146.688 (68.563)  |
-| drat     | 3.597 (0.535)     |
-| wt       | 3.217 (0.978)     |
-| qsec     | 17.849 (1.787)    |
-| vs       | 0.438 (0.504)     |
-| am\_0    | 19 (0.594)        |
-| am\_1    | 13 (0.406)        |
-| gear     | 3.688 (0.738)     |
-| carb     | 2.812 (1.615)     |
+| variable | mean (sd)/count (p) |
+|:---------|:--------------------|
+| mpg      | 20.091 (6.027)      |
+| cyl      | 6.188 (1.786)       |
+| disp     | 230.722 (123.939)   |
+| hp       | 146.688 (68.563)    |
+| drat     | 3.597 (0.535)       |
+| wt       | 3.217 (0.978)       |
+| qsec     | 17.849 (1.787)      |
+| vs       | 0.438 (0.504)       |
+| am\_0    | 19 (0.594)          |
+| am\_1    | 13 (0.406)          |
+| gear     | 3.688 (0.738)       |
+| carb     | 2.812 (1.615)       |
 
 ``` r
 
-kable(
-  mtcars %>% 
-    group_by(am) %>%
-    select(mpg, cyl, disp, hp, vs) %>%
-    var_types("cqcqqc") %>%
-    ezsummary(unit_markup = "[. (.)]", flavor="wide", round.N = 2)
-)
+mtcars %>% 
+  group_by(am) %>%
+  select(mpg, cyl, disp, hp, vs) %>%
+  var_types("cqcqqc") %>%
+  ezsummary(unit_markup = "[. (.)]", flavor="wide", digits = 2) %>%
+  kable()
 ```
 
-| variable | am.0\_mean\_n (sd\_p) | am.1\_mean\_n (sd\_p) |
-|:---------|:----------------------|:----------------------|
-| mpg      | 17.15 (3.83)          | 24.39 (6.17)          |
-| cyl\_4   | 3 (0.16)              | 8 (0.62)              |
-| cyl\_6   | 4 (0.21)              | 3 (0.23)              |
-| cyl\_8   | 12 (0.63)             | 2 (0.15)              |
-| disp     | 290.38 (110.17)       | 143.53 (87.2)         |
-| hp       | 160.26 (53.91)        | 126.85 (84.06)        |
-| vs\_0    | 12 (0.63)             | 6 (0.46)              |
-| vs\_1    | 7 (0.37)              | 7 (0.54)              |
+| variable | am.0\_mean (am.0\_sd)/p) | am.1\_mean (am.1\_sd)/p) |
+|:---------|:-------------------------|:-------------------------|
+| mpg      | 17.15 (3.83)             | 24.39 (6.17)             |
+| cyl\_4   | 3 (0.16)                 | 8 (0.62)                 |
+| cyl\_6   | 4 (0.21)                 | 3 (0.23)                 |
+| cyl\_8   | 12 (0.63)                | 2 (0.15)                 |
+| disp     | 290.38 (110.17)          | 143.53 (87.2)            |
+| hp       | 160.26 (53.91)           | 126.85 (84.06)           |
+| vs\_0    | 12 (0.63)                | 6 (0.46)                 |
+| vs\_1    | 7 (0.37)                 | 7 (0.54)                 |
+
+A comparison with the code you need to write using `dplyr` and `tidyr`
+
+``` r
+mtcars %>%
+  group_by(cyl) %>%
+  select(mpg, disp, hp, wt) %>% 
+  summarize_each(funs(mean, sd)) %>% 
+  gather(var, value, -cyl) %>% 
+  separate(var, into = c("var", "analysis")) %>% 
+  spread(analysis, value) %>% 
+  mutate(var = factor(var, levels = c("mpg", "disp", "hp", "wt"))) %>% 
+  arrange(var, cyl)
+#> Source: local data frame [12 x 4]
+#> 
+#>      cyl    var       mean         sd
+#>    <dbl> <fctr>      <dbl>      <dbl>
+#> 1      4    mpg  26.663636  4.5098277
+#> 2      6    mpg  19.742857  1.4535670
+#> 3      8    mpg  15.100000  2.5600481
+#> 4      4   disp 105.136364 26.8715937
+#> 5      6   disp 183.314286 41.5624602
+#> 6      8   disp 353.100000 67.7713236
+#> 7      4     hp  82.636364 20.9345300
+#> 8      6     hp 122.285714 24.2604911
+#> 9      8     hp 209.214286 50.9768855
+#> 10     4     wt   2.285727  0.5695637
+#> 11     6     wt   3.117143  0.3563455
+#> 12     8     wt   3.999214  0.7594047
+```
 
 Issues
 ------
