@@ -10,9 +10,11 @@ auto_var_types(tbl)
 \item{tbl}{The imported data.frame}
 }
 \description{
-If the user did not provide var_types, the function will preassume every variables to be quantitative
-variables. If a variable's type is character but either the user or the automatic step said it's a quantitative
-variable, the var_types attribute for that variable will be overwritten as categorical variable. At the same time,
-a warning message will be printed on the screen.
+If the user did not provide var_types, the function will
+preassume every variables to be quantitative variables. If a variable's type
+is character but either the user or the automatic step said it's a
+quantitative variable, the var_types attribute for that variable will be
+overwritten as categorical variable. At the same time, a warning message
+will be printed on the screen.
 }
 

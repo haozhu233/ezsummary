@@ -65,9 +65,10 @@ ezsummary_quantitative <- function(
   tbl, total = FALSE, n = FALSE, missing = FALSE,
   mean = TRUE, sd = TRUE, sem = FALSE, median = FALSE, quantile = FALSE,
   extra = NULL,
-  digits = getOption("digits"), rounding_type = "round",
+  digits = getOption("digits"),
+  rounding_type = c("round", "signif", "ceiling", "floor"),
   round.N=3,
-  flavor = "long", fill = 0, unit_markup = NULL
+  flavor = c("long", "wide"), fill = 0, unit_markup = NULL
 ){
 
   if(round.N != 3){
@@ -75,19 +76,15 @@ ezsummary_quantitative <- function(
     digits <- round.N
   }
 
+  rounding_type <- match.arg(rounding_type)
+  flavor <- match.arg(flavor)
+
   if(is.vector(tbl)){
     tbl <- as.tbl(as.data.frame(tbl))
     attributes(tbl)$names <- "unknown"
     warning('ezsummary cannot detect the naming information from an atomic ',
             'vector. If you want to have full naming information, please ',
             'pass the value in as a data frame using `select` from dplyr.')
-  }
-
-  if(!flavor %in% c("long", "wide")){
-    flavor <- "long"
-    warning(
-      '`flavor` has to be either "long" or "wide". The default value "long" ',
-      'is used here. ')
   }
 
   group_name <- attributes(tbl)$vars
@@ -141,10 +138,14 @@ ezsummary_quantitative <- function(
       rounding_type %in% c("round", "signif"),
       eval(call(rounding_type, value, digits)),
       eval(call(rounding_type, value))
-    )) %>%
-    separate(var, into = c("var", "analysis"))
+    ))
 
-
+  if(length(tasks_list) == 1){
+    tbl_summary["analysis"] <- tasks_names
+  }else{
+    tbl_summary <- tbl_summary %>%
+      separate(var, into = c("var", "analysis"))
+  }
 
   if(flavor == "wide" & n_group != 0){
     tbl_summary[group_name] <- sapply(
