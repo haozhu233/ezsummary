@@ -111,7 +111,7 @@ ezsummary <- function(tbl, ..., mode = c("ez", "details")){
       tbl_q_result[1:ncol(tbl_q_result)], as.factor)
     tbl_c_result[1:ncol(tbl_c_result)] <- sapply(
       tbl_c_result[1:ncol(tbl_c_result)], as.factor)
-    tbl_q_result$reorder_list <- tbl_q_result$var
+    tbl_q_result$reorder_list <- tbl_q_result$variable
     tbl_c_result$reorder_list <- attr(tbl_c_result, "categories")
     tbl_result <- bind_rows(tbl_q_result, tbl_c_result) %>%
       mutate(reorder_list = factor(reorder_list, levels = var_name)) %>%
