@@ -7,8 +7,6 @@ CRAN: [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/ezsummary)](ht
 Test Coverage: [![Coverage Status](https://coveralls.io/repos/haozhu233/ezsummary/badge.svg?branch=master&service=github)](https://coveralls.io/github/haozhu233/ezsummary?branch=master)
 [![Join the chat at https://gitter.im/haozhu233/ezsummary](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/haozhu233/ezsummary?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-> Hadley will update tidyr on June 10th and that update will break this app. I will do an update to this app accordingly.
-
 Introduction
 ------------
 
