@@ -3,7 +3,7 @@ Type: Package
 Title: Summarise Data in the Quick and Easy Way
 Version: 0.2.0
 Authors@R: c(
-    person("Hao", "Zhu", email = "haozhu@hsl.harvard.edu", role = c("aut", "cre")),
+    person("Hao", "Zhu", email = "haozhu233@gmail.com", role = c("aut", "cre")),
     person("Thomas", "Travison", email = "TGT@hsl.harvard.edu", role = c("ctb")),
     person("Timothy", "Tsai", email = "TimothyTsai@hsl.harvard.edu", role = c("ctb")),
     person("Akhmed", "Umyarov", email = "aumyarov@umn.edu", role = c("ctb"))
