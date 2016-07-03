@@ -56,7 +56,7 @@
 #' @export
 
 ezsummary_categorical <- function(
-  tbl, n = FALSE, count = TRUE, p = TRUE, p_type = c("decimal", "percentage"),
+  tbl, n = FALSE, count = TRUE, p = TRUE, p_type = c("decimal", "percent"),
   digits = 3,
   rounding_type = c("round", "signif", "ceiling", "floor"),
   P = FALSE, round.N = 3,

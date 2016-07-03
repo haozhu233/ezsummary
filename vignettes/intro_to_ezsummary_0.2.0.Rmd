@@ -1,0 +1,182 @@
+---
+title: "Introduction to ezsummary 0.2.0"
+author: "Hao Zhu"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to ezsummary 0.2.0}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+When we do a typical statistical summary to a piece of data, we usually:
+
+- Perform quantitative analyses, including mean, standard deviation and etc, to most continuous variables.
+- Perform qualitative (or say categorical) analyses, in most cases, counts and proportions, to categorical variables.
+- Compare the results, if we even stratified the data into groups. 
+- Paste the results of these two types of analyses into one table, if applicable.
+- Decorate the result table before we send it to print
+
+This `ezsummary` package allows you to:
+
+- Generate most common data summarizing tasks in a single command by pre-programing these tasks into options that you can toggle on and off.
+- Perform customized analysis using very simple syntax.
+- Have the results of both quantitative and categorical analyses displayed in one single table.
+- Quickly generate summarizations of different sub groups using `dplyr::group_by()` function.
+- Spread the stratified results into a "wide" format
+- Easily combine columns into customized format and make the table ready to be printed
+- Have both columns and rows sorted as you expected (instead of get sorted in alphabetical order if you use `tidyr::spread()` directly. )
+
+This package is not intent to solve every single summarization problem. The goal is to simplify and speed up 80% of the most common data summarization tasks. For the rest 20%, one can always use `dplyr`, `tidyr` or other tools to get what they want. 
+
+This package builds heavily on Hadley's `dplyr` and `tidyr`. If you are not familar with neither these two, you may want to read the package vignettes for at least `dplyr` first before you continue. 
+
+## Sample Data: mtcars
+We will use `mtcars` to demonstrate the functionality of this package as it provides a good amount of both continuous and categorical data and almost everyone is familar with it. 
+```{r data}
+dim(mtcars)
+head(mtcars)
+```
+
+## Functions available in `ezsummary`
+Here is a list of functions available in `ezsummary`:
+
+- ezsummary_q() (or ezsummary_quantitative())
+- ezsummary_c() (or ezsummary_categorical())
+- ezmarkup()
+- var_types()
+- ezsummary()
+
+Note: I picked this order as it's easier to explain in this way. __If you want a quick jump start, you can go to the [ezsummary_q()](#ezsummary_q) and [ezsummary() & var_type()](#ezsummary-var_type)
+
+## ezmarkup()
+I will start with `ezmarkup()` as some functionalities of other `ezsummary` functions depend on it. This function can combine two or multiple columns and format the result in a customized way. In some way, it is similar with `tidyr::unite()` but it provides a more flexible way to format the result (but I admit it's not that well written :P).
+
+In `ezmarkup()`, we use a dot to indicate a column. If you want to combine two columns, you put them in a pair of `[]`, like `[..]`. The interesting part is, inside the brackets, you can literally do whatever you want. For example, `[. (.)]` will put the second column in a pair of () sitting one space after the first column.
+
+```{r ezmarkup, message=FALSE}
+library(dplyr)
+library(ezsummary)
+library(knitr)
+
+mtcars %>% 
+  select(1:3) %>%
+  ezmarkup(".[. (.)]") %>%
+  head()
+
+mtcars %>% 
+  select(1:3) %>%
+  ezmarkup(".[. ~~.~~ :-)]") %>%
+  head()
+```
+
+## ezsummary_q()
+### Preset functions
+Let's get back to data summarization. The most common tasks for quantitative analyses have been pre-programmed and you can just use those options to decide whether you want to include them in the analysis. Such pre-programmed options include:
+
+- `total`: Total counts of records including `NA`.
+- `missing`: Counts of missing records (`NA`).
+- `n`: Counts of records other than `NA`.
+- `mean`: Mean of records (after excluding `NA`, same for everything below).
+- `sd`: Standard deviation.
+- `sem`: Standard error of the mean.
+- `median`: Median
+- `quantile`: 0, 25, 50, 75, 100 percentile of the records
+
+By default, `mean` and `sd` are turned on as they are commonly used. 
+
+```{r ezsummary_q_1}
+mtcars %>% ezsummary(n = T, quantile = T) %>% kable()
+```
+
+### Customized Functions
+If you don't see what you want in this list, you can also program some functions on your own by defining them in the option `extra`. Multiple extra functions can be piped in as a vector. The name of the vector element is the label for the result column. The functions are wrapped as strings with the variable indicated by the dot. For example, if you want to get the maximum value and counts of records larger than 20, you can use the code below
+```{r ezsummary_q_2}
+mtcars %>% 
+  ezsummary(
+    extra = c(
+      max = "max(., na.rm = T)",
+      above20 = "sum(. > 20, na.rm = T)"
+    )
+  ) %>%
+  kable()
+```
+
+
+### Summarizing by group
+In many cases, we usually need to summarize two or more groups of data. In that case, instead of subsetting, you can use `dplyr::group_by()` together with `ezsummary()`, `ezsummary_q()` and `ezsummary_c()`. 
+
+```{r ezsummary_q_3}
+mtcars %>%
+  group_by(cyl) %>%
+  ezsummary(digits = 1) %>%
+  kable()
+```
+
+### "Wide" format
+If you don't want the categorical info be listed out separately as a column, you can use the `flavor` option (either "long" or "wide"). It will call `tidyr::gather()` and `tidyr::spread()` internally and resort columns in an order you would expect (unlike the default alphabetical sorting behavior of `tidyr::spread()`).  
+
+```{r ezsummary_q_4}
+mtcars %>%
+  group_by(cyl) %>%
+  ezsummary(flavor = "wide", digits = 1) %>% 
+  kable()
+```
+
+### Unit Markup
+You can also ask ezsummary() to call `ezmarkup()` internally to combine columns to make "Table One" style tables. Here, since we assume you don't need to know how many groups there are when you first run `ezsummary`, we use an option called `unit_markup` to mark the styles you want for each group.
+```{r ezsummary_q_5}
+mtcars %>%
+  group_by(carb) %>%
+  ezsummary(flavor = "wide", digits = 1, unit_markup = '[. (.)]') %>%
+  kable()
+```
+
+### Rounding Methods
+As I demonstrated above, you can use `digits` to control the rounding digits. In fact, in `ezsummary`, you can even control rounding method by adjusting the `rounding method` option. Available methods are "round"(default), "signif", "ceiling" and "floor". You can check `?round` in R for details. 
+```{r ezsummary_q_6}
+mtcars %>%
+  ezsummary(rounding_method = "ceiling") %>%
+  kable()
+```
+
+## ezsummary_c()
+`ezsummary_c()` is for categorical summarization. Comparing with `ezsummary_q()`, it is very straight forward. It can take most of the options that `ezsummary_q() takes. You can customize if you want a "decimal" or "percent" output.
+```{r ezsummary_c_1}
+mtcars %>%
+  select(cyl, vs, am, gear, carb) %>%
+  ezsummary_c() %>%
+  kable()
+```
+
+```{r ezsummary_c_2}
+mtcars %>%
+  group_by(cyl) %>%
+  select(cyl, vs, am, gear, carb) %>%
+  ezsummary_c(p_type = "percent", flavor = "wide", 
+              unit_markup = "[. (.)]", digits = 0) %>%
+  kable()
+```
+
+## ezsummary() & var_type()
+You might have already found that in the "ezsummary_q" section, I actually used `ezsummary()` instead of `ezsummary_q()`. Basically, `ezsummary()` is a wrapper function for both `ezsummary_q()` and `ezsummary_c()`. It automatically categorizes the options you passed in. It assumes all variables are continuous unless they are character strings. This function exists as an attempt to unify the analytic results of continuous and categorical variables into one table. In order to specify which variables you want to analyze as categorical variables, you need to specify them via `var_types()`, which takes a string of either "q" or "c" for each variable to be analyzed.
+
+```{r ezsummary_1}
+mtcars %>%
+  select(mpg, cyl, disp, gear) %>%
+  var_types("qcqc") %>%
+  ezsummary(n = T) %>%
+  kable()
+```
+
+```{r ezsummary_2}
+mtcars %>%
+  select(mpg, cyl, disp, gear) %>%
+  var_types("qcqc") %>%
+  group_by(cyl) %>%
+  ezsummary(flavor = "wide", unit_markup = "[. (.)]", 
+            p_type = "percent", digits = 1) %>%
+  kable(col.names = c("", "4 Cylinders", "6 Cylinders", "8 Cylinder"))
+```
+
+

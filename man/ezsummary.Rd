@@ -22,4 +22,9 @@ separately and the result is stored in a list}
 \description{
 Quick and Easy summarise function
 }
+\details{
+For detailed options, please check the help document for
+\code{\link{ezsummary_q}} and \code{\link{ezsummary_c}}. You may also check
+out the package vignette for details.
+}
 

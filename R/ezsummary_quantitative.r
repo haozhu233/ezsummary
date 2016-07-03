@@ -129,8 +129,7 @@ ezsummary_quantitative <- function(
     summarise_each(funs_(tasks_list))
 
   if(n_group == 0){
-    tbl_summary <- tbl_summary_raw %>%
-      gather(variable, value)
+    tbl_summary <- suppressWarnings(gather(tbl_summary_raw, variable, value))
   }else{
     tbl_summary <- tbl_summary_raw %>%
       gather(variable, value, seq(-1, -n_group))

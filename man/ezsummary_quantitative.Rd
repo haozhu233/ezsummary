@@ -3,8 +3,7 @@
 \name{ezsummary_quantitative}
 \alias{ezsummary_q}
 \alias{ezsummary_quantitative}
-\title{Easily summarize quantitative data
-#'}
+\title{Easily summarize quantitative data}
 \usage{
 ezsummary_quantitative(tbl, total = FALSE, n = FALSE, missing = FALSE,
   mean = TRUE, sd = TRUE, sem = FALSE, median = FALSE,
