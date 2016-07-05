@@ -136,7 +136,7 @@ mtcars %>%
 As I demonstrated above, you can use `digits` to control the rounding digits. In fact, in `ezsummary`, you can even control rounding method by adjusting the `rounding method` option. Available methods are "round"(default), "signif", "ceiling" and "floor". You can check `?round` in R for details. 
 ```{r ezsummary_q_6}
 mtcars %>%
-  ezsummary(rounding_method = "ceiling") %>%
+  ezsummary(rounding_type = "ceiling") %>%
   kable()
 ```
 
