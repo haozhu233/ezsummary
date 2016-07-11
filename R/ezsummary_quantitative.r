@@ -150,7 +150,8 @@ ezsummary_quantitative <- function(
       tbl_summary["variable"] <- var_name
     }else{
       tbl_summary <- tbl_summary %>%
-        separate(variable, into = c("variable", "analysis"))
+        separate(variable, into = c("variable", "analysis"),
+                 sep = "_(?=[^_]+$)")
     }
   }
 

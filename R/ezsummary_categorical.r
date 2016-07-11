@@ -162,7 +162,8 @@ ezsummary_categorical <- function(
     tbl_summary <- tbl_summary %>%
       spread(analysis, value, fill = fill) %>%
       ungroup() %>%
-      separate(variable, into = c("var_origin", "var_options"), remove = FALSE) %>%
+      separate(variable, into = c("var_origin", "var_options"),
+               remove = FALSE, sep = "_(?=[^_]+$)") %>%
       mutate(var_origin = factor(var_origin, levels = var_name)) %>%
       arrange_(c("var_origin", group_name)) %>%
       select(-var_origin, -var_options)

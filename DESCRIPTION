@@ -1,7 +1,7 @@
 Package: ezsummary
 Type: Package
 Title: Generate Data Summarization in a Tidy Format
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: c(
     person("Hao", "Zhu", email = "haozhu233@gmail.com", role = c("aut", "cre")),
     person("Thomas", "Travison", email = "TGT@hsl.harvard.edu", role = c("ctb")),
@@ -11,6 +11,8 @@ Authors@R: c(
 Description: Functions that simplify the process of generating print-ready data summarization using 'dplyr' syntax.
 License: MIT + file LICENSE
 LazyData: TRUE
+URL: https://github.com/haozhu233/ezsummary
+BugReports: https://github.com/haozhu233/ezsummary/issues
 Depends:
     R (>= 3.1.2)
 Imports:
@@ -22,3 +24,4 @@ Suggests:
     rmarkdown
 RoxygenNote: 5.0.1
 VignetteBuilder: knitr
+
