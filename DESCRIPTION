@@ -1,7 +1,7 @@
 Package: ezsummary
 Type: Package
 Title: Generate Data Summary in a Tidy Format
-Version: 0.2.1
+Version: 0.2.1.9000
 Authors@R: c(
     person("Hao", "Zhu", email = "haozhu233@gmail.com", role = c("aut", "cre")),
     person("Thomas", "Travison", email = "TGT@hsl.harvard.edu", role = c("ctb")),
