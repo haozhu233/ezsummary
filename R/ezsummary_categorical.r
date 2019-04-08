@@ -92,8 +92,8 @@ ezsummary_categorical <- function(
   flavor <- match.arg(flavor)
 
   # Try to obtain grouping and variable information from the input tbl
-  group_name <- attributes(tbl)$vars
-  var_name <- attributes(tbl)$names
+  group_name <- group_vars(tbl)
+  var_name <- tbl_vars(tbl)
   if (!is.null(group_name)){
     group_name <- as.character(group_name)
     var_name <- var_name[!var_name %in% group_name]

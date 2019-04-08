@@ -88,8 +88,8 @@ ezsummary_quantitative <- function(
             'pass the value in as a data frame using `select` from dplyr.')
   }
 
-  group_name <- attributes(tbl)$vars
-  var_name <- attributes(tbl)$names
+  group_name <- group_vars(tbl)
+  var_name <- tbl_vars(tbl)
   if (!is.null(group_name)){
     group_name <- as.character(group_name)
     var_name <- var_name[!var_name %in% group_name]
